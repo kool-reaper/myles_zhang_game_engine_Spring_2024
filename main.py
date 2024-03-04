@@ -1,6 +1,6 @@
 # This file was created by the one and only Myles Zhang
-# My first source control edit
-# x
+# My first source control edit!
+
 # imports
 import pygame as pg
 from settings import *
