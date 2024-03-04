@@ -12,6 +12,32 @@ from time import sleep
 
 coincount = 0
 
+# added this math function to round down the clock
+from math import floor
+
+# this 'cooldown' class is designed to help us control time
+class Cooldown():
+    # sets all properties to zero when instantiated...
+    def __init__(self):
+        self.current_time = 0
+        self.event_time = 0
+        self.delta = 0
+        # ticking ensures the timer is counting...
+    # must use ticking to count up or down
+    def ticking(self):
+        self.current_time = floor((pg.time.get_ticks())/1000)
+        self.delta = self.current_time - self.event_time
+    # resets event time to zero - cooldown reset
+    def countdown(self, x):
+        x = x - self.delta
+        if x != None:
+            return x
+    def event_reset(self):
+        self.event_time = floor((pg.time.get_ticks())/1000)
+    # sets current time
+    def timer(self):
+        self.current_time = floor((pg.time.get_ticks())/1000)
+
 # creating game class
 class Game:
     # defining game class
