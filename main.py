@@ -36,6 +36,7 @@ class Game:
         self.all_sprites = pg.sprite.Group()
         self.walls = pg.sprite.Group()
         self.coins = pg.sprite.Group()
+        self.enemies = pg.sprite.Group()
         for row, tiles in enumerate(self.map_data):
             for col, tile in enumerate(tiles):
                 if tile == '1':
@@ -44,6 +45,8 @@ class Game:
                     self.player = Player(self, col, row)
                 if tile == 'C':
                     Coin(self, col, row)
+                if tile == "E":
+                    Enemy(self, col, row)
 
     # run method
     def run(self):
@@ -74,11 +77,10 @@ class Game:
 
     # drawing the display
     def draw(self):
-        coincount = self.player.collidewithcoins
         self.screen.fill(BGCOLOR)
         self.draw_grid()
         self.all_sprites.draw(self.screen)
-        self.draw_text(self.screen, "Coins: " + str(coincount), 42, BLACK, 1, 1)
+        self.draw_text(self.screen, "Coins: " + str(self.player.coincount), 42, BLACK, 1, 1)
         pg.display.flip()
 
     # input method
