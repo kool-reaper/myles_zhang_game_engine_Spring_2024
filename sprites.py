@@ -21,6 +21,7 @@ class Player(Sprite):
         self.x = x * TILESIZE
         self.y = y * TILESIZE
         self.coincount = 0
+        self.gamelevel = 0
     
     # Move function
     # def move(self, dx = 0, dy = 0):
@@ -69,7 +70,10 @@ class Player(Sprite):
     def collidewithobj(self, group, kill):
         hits = pg.sprite.spritecollide(self, group, kill)
         if hits:
-            self.coincount += 1
+            if group == self.game.coins:
+                self.coincount += 1
+            if group == self.game.doors:
+                self.gamelevel += 1
         pass
 
     # Updating the sprite
@@ -144,6 +148,20 @@ class Coin(Sprite):
         self.game = game
         self.image = pg.Surface((TILESIZE, TILESIZE))
         self.image.fill(YELLOW)
+        self.rect = self.image.get_rect()
+        self.x = x
+        self.y = y
+        self.rect.x = x * TILESIZE
+        self.rect.y = y * TILESIZE
+
+class Door(Sprite):
+    # Initialize Class
+    def __init__(self, game, x, y):
+        self.groups = game.all_sprites, game.coins
+        Sprite.__init__(self, self.groups)
+        self.game = game
+        self.image = pg.Surface((TILESIZE, TILESIZE))
+        self.image.fill(GREEN)
         self.rect = self.image.get_rect()
         self.x = x
         self.y = y

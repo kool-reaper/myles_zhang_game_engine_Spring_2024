@@ -10,8 +10,6 @@ from random import randint
 from os import path
 from time import sleep
 
-coincount = 0
-
 # added this math function to round down the clock
 from math import floor
 
@@ -56,9 +54,7 @@ class Game:
         img_folder = path.join(game_folder, 'images')
         self.map_data = []
         self.player_img = pg.image.load(path.join(img_folder, 'player.png')).convert_alpha()
-        with open(path.join(game_folder, 'map.txt'), 'rt') as f:
-            for line in f:
-                self.map_data.append(line)
+
 
     # init all variables, setup groups, instantiate classes
     def new(self):
@@ -66,6 +62,7 @@ class Game:
         self.walls = pg.sprite.Group()
         self.coins = pg.sprite.Group()
         self.enemies = pg.sprite.Group()
+        self.doors = pg.sprite.Group()
         for row, tiles in enumerate(self.map_data):
             for col, tile in enumerate(tiles):
                 if tile == '1':
@@ -74,6 +71,8 @@ class Game:
                     self.player = Player(self, col, row)
                 if tile == 'C':
                     Coin(self, col, row)
+                if tile == 'D':
+                    Door(self, col, row)
                 if tile == "E":
                     Enemy(self, col, row)
 
@@ -96,6 +95,11 @@ class Game:
     # updating the display and positions
     def update(self):
         self.all_sprites.update()
+        game_folder = path.dirname(__file__)
+        map_folder = path.join(game_folder, 'maps')
+        with open(path.join(map_folder, 'map.txt'), 'rt') as f:
+            for line in f:
+                self.map_data.append(line)
 
     # drawing the grid
     def draw_grid(self):
