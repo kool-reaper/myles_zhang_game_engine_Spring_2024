@@ -53,7 +53,9 @@ class Game:
     # Load saved game data
     def load_data(self):
         game_folder = path.dirname(__file__)
+        img_folder = path.join(game_folder, 'images')
         self.map_data = []
+        self.player_img = pg.image.load(path.join(img_folder, 'player.png')).convert_alpha()
         with open(path.join(game_folder, 'map.txt'), 'rt') as f:
             for line in f:
                 self.map_data.append(line)
@@ -116,18 +118,8 @@ class Game:
             # quit method
             if event.type == pg.QUIT:
                 self.quit()
-            # if event.type == pg.KEYDOWN:
-            #     # movep
-            #     keys = pg.key.get_pressed()
-            #     if event.key == pg.K_LEFT:
-            #         self.player.move(dx=-1)
-            #     if event.key == pg.K_RIGHT:
-            #         self.player.move(dx=1)
-            #     if event.key == pg.K_UP:
-            #         self.player.move(dy=-1)
-            #     if event.key == pg.K_DOWN:
-            #         self.player.move(dy=1)
 
+    # Drawing text
     def draw_text(self, surface, text, size, color, x, y):
         font_name = pg.font.match_font('arial')
         font = pg.font.Font(font_name, size)
