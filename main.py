@@ -52,8 +52,12 @@ class Game:
     def load_data(self):
         game_folder = path.dirname(__file__)
         img_folder = path.join(game_folder, 'images')
+        map_folder = path.join(game_folder, 'maps')
         self.map_data = []
         self.player_img = pg.image.load(path.join(img_folder, 'player.png')).convert_alpha()
+        with open(path.join(map_folder, 'map0.txt'), 'rt') as f:
+            for line in f:
+                self.map_data.append(line)
 
 
     # init all variables, setup groups, instantiate classes
@@ -95,11 +99,6 @@ class Game:
     # updating the display and positions
     def update(self):
         self.all_sprites.update()
-        game_folder = path.dirname(__file__)
-        map_folder = path.join(game_folder, 'maps')
-        with open(path.join(map_folder, 'map.txt'), 'rt') as f:
-            for line in f:
-                self.map_data.append(line)
 
     # drawing the grid
     def draw_grid(self):
