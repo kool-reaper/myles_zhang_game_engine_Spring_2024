@@ -5,7 +5,6 @@ import pygame as pg
 from settings import *
 from pygame.sprite import Sprite
 
-
 # Player Class
 class Player(Sprite):
     # Initialize class
@@ -14,19 +13,12 @@ class Player(Sprite):
         Sprite.__init__(self, self.groups)
         self.game = game
         self.image = game.player_img
-        self.width = self.image.get_width()
-        self.height = self.image.get_height()
         self.rect = self.image.get_rect()
         self.vx, self.vy = 0, 0
         self.x = x * TILESIZE
         self.y = y * TILESIZE
         self.coincount = 0
         self.gamelevel = 0
-    
-    # Move function
-    # def move(self, dx = 0, dy = 0):
-    #     self.x += dx
-    #     self.y += dy
 
     # Checking which keys are pressed
     def getkeys(self):
@@ -82,10 +74,11 @@ class Player(Sprite):
         self.x += self.vx * self.game.dt
         self.y += self.vy * self.game.dt
         self.rect.x = self.x
+        self.collidewithwalls('x')
         self.rect.y = self.y
-        self.collidewithwalls("x")
-        self.collidewithwalls("y")
+        self.collidewithwalls('y')
         self.collidewithobj(self.game.coins, True)
+        self.collidewithobj(self.game.doors, False)
 
 class Enemy (Sprite):
     # Initialize class
@@ -109,18 +102,28 @@ class Enemy (Sprite):
         if dir == 'x':
             hits = pg.sprite.spritecollide(self, self.game.walls, False)
             if hits:
+                if self.vx > 0:
+                    self.x = hits[0].rect.left - self.rect.width
+                if self.vx < 0:
+                    self.x = hits[0].rect.right
                 self.vx = -self.vx
+                self.rect.x = self.x
         if dir == 'y':
             hits = pg.sprite.spritecollide(self, self.game.walls, False)
             if hits:
+                if self.vy > 0:
+                    self.y = hits[0].rect.top - self.rect.height
+                if self.vy < 0:
+                    self.y = hits[0].rect.bottom
                 self.vy = -self.vy
+                self.rect.y = self.y
 
     def update(self):
         self.x += self.vx * self.game.dt
         self.y += self.vy * self.game.dt
         self.rect.x = self.x
-        self.rect.y = self.y
         self.collidewithwalls("x")
+        self.rect.y = self.y
         self.collidewithwalls("y")
 
 
@@ -157,7 +160,7 @@ class Coin(Sprite):
 class Door(Sprite):
     # Initialize Class
     def __init__(self, game, x, y):
-        self.groups = game.all_sprites, game.coins
+        self.groups = game.all_sprites, game.doors
         Sprite.__init__(self, self.groups)
         self.game = game
         self.image = pg.Surface((TILESIZE, TILESIZE))
