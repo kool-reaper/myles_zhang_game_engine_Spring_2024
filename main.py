@@ -47,21 +47,56 @@ class Game:
         pg.key.set_repeat(500, 100)
         self.running = True
         self.load_data()
+        self.gamelevelprev = 0
+
+    def load_map(self):
+        game_folder = path.dirname(__file__)
+        map_folder = path.join(game_folder, 'maps')
+        with open(path.join(map_folder, 'map0.txt'), 'rt') as f:
+            for line in f:
+                self.map_data.append(line)
+        self.new()
+
+    def update_map(self):
+        game_folder = path.dirname(__file__)
+        map_folder = path.join(game_folder, 'maps')
+        if self.player.gamelevel != self.gamelevelprev:
+            self.gamelevelprev = self.player.gamelevel
+            self.map_data = []
+            with open(path.join(map_folder, 'map' + str(self.player.gamelevel) + '.txt'), 'rt') as f:
+                for line in f:
+                    self.map_data.append(line)
+            self.new()
 
     # Load saved game data
     def load_data(self):
         game_folder = path.dirname(__file__)
         img_folder = path.join(game_folder, 'images')
-        map_folder = path.join(game_folder, 'maps')
         self.map_data = []
         self.player_img = pg.image.load(path.join(img_folder, 'player.png')).convert_alpha()
-        with open(path.join(map_folder, 'map0.txt'), 'rt') as f:
-            for line in f:
-                self.map_data.append(line)
-
+        self.load_map()
 
     # init all variables, setup groups, instantiate classes
     def new(self):
+        self.all_sprites = pg.sprite.Group()
+        self.walls = pg.sprite.Group()
+        self.coins = pg.sprite.Group()
+        self.enemies = pg.sprite.Group()
+        self.doors = pg.sprite.Group()
+        for row, tiles in enumerate(self.map_data):
+            for col, tile in enumerate(tiles):
+                if tile == '1':
+                    Wall(self, col, row)
+                if tile == 'P':
+                    self.player = Player(self, col, row)
+                if tile == 'C':
+                    Coin(self, col, row)
+                if tile == 'D':
+                    Door(self, col, row)
+                if tile == "E":
+                    Enemy(self, col, row)
+
+    def newlevel(self):
         self.all_sprites = pg.sprite.Group()
         self.walls = pg.sprite.Group()
         self.coins = pg.sprite.Group()
@@ -99,6 +134,8 @@ class Game:
     # updating the display and positions
     def update(self):
         self.all_sprites.update()
+        self.update_map()
+        print(str(self.player.gamelevel))
 
     # drawing the grid
     def draw_grid(self):

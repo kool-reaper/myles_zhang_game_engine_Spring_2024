@@ -5,6 +5,10 @@ import pygame as pg
 from settings import *
 from pygame.sprite import Sprite
 
+# Global game variables
+coincount = 0
+gamelevel = 0
+
 # Player Class
 class Player(Sprite):
     # Initialize class
