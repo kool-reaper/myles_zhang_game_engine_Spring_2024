@@ -47,8 +47,11 @@ class Game:
         pg.key.set_repeat(500, 100)
         self.running = True
         self.load_data()
-        self.gamelevelprev = 0
+        # Player statistics
+        self.gamelevel = 0
+        self.coincount = 0
 
+    # Loading map for the first time
     def load_map(self):
         game_folder = path.dirname(__file__)
         map_folder = path.join(game_folder, 'maps')
@@ -57,13 +60,14 @@ class Game:
                 self.map_data.append(line)
         self.new()
 
+    # Updating the map when the level changes
     def update_map(self):
         game_folder = path.dirname(__file__)
         map_folder = path.join(game_folder, 'maps')
-        if self.player.gamelevel != self.gamelevelprev:
-            self.gamelevelprev = self.player.gamelevel
+        if self.player.changelevel != 0:
+            self.gamelevel += 1
             self.map_data = []
-            with open(path.join(map_folder, 'map' + str(self.player.gamelevel) + '.txt'), 'rt') as f:
+            with open(path.join(map_folder, 'map' + str(self.gamelevel) + '.txt'), 'rt') as f:
                 for line in f:
                     self.map_data.append(line)
             self.new()
@@ -76,27 +80,15 @@ class Game:
         self.player_img = pg.image.load(path.join(img_folder, 'player.png')).convert_alpha()
         self.load_map()
 
+    # Updates player statistics
+    def updatestats(self, stat):
+        if stat == "coins":
+            if self.player.changecoins == 1:
+                self.player.changecoins = 0
+                self.coincount += 1
+
     # init all variables, setup groups, instantiate classes
     def new(self):
-        self.all_sprites = pg.sprite.Group()
-        self.walls = pg.sprite.Group()
-        self.coins = pg.sprite.Group()
-        self.enemies = pg.sprite.Group()
-        self.doors = pg.sprite.Group()
-        for row, tiles in enumerate(self.map_data):
-            for col, tile in enumerate(tiles):
-                if tile == '1':
-                    Wall(self, col, row)
-                if tile == 'P':
-                    self.player = Player(self, col, row)
-                if tile == 'C':
-                    Coin(self, col, row)
-                if tile == 'D':
-                    Door(self, col, row)
-                if tile == "E":
-                    Enemy(self, col, row)
-
-    def newlevel(self):
         self.all_sprites = pg.sprite.Group()
         self.walls = pg.sprite.Group()
         self.coins = pg.sprite.Group()
@@ -135,7 +127,7 @@ class Game:
     def update(self):
         self.all_sprites.update()
         self.update_map()
-        print(str(self.player.gamelevel))
+        self.updatestats("coins")
 
     # drawing the grid
     def draw_grid(self):
@@ -149,7 +141,7 @@ class Game:
         self.screen.fill(BGCOLOR)
         self.draw_grid()
         self.all_sprites.draw(self.screen)
-        self.draw_text(self.screen, "Coins: " + str(self.player.coincount), 42, BLACK, 1, 1)
+        self.draw_text(self.screen, "Coins: " + str(self.coincount), 42, BLACK, 1, 1)
         pg.display.flip()
 
     # input method

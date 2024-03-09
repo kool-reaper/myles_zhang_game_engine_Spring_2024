@@ -5,10 +5,6 @@ import pygame as pg
 from settings import *
 from pygame.sprite import Sprite
 
-# Global game variables
-coincount = 0
-gamelevel = 0
-
 # Player Class
 class Player(Sprite):
     # Initialize class
@@ -21,8 +17,8 @@ class Player(Sprite):
         self.vx, self.vy = 0, 0
         self.x = x * TILESIZE
         self.y = y * TILESIZE
-        self.coincount = 0
-        self.gamelevel = 0
+        self.changecoins = 0
+        self.changelevel = 0
 
     # Checking which keys are pressed
     def getkeys(self):
@@ -67,12 +63,11 @@ class Player(Sprite):
         hits = pg.sprite.spritecollide(self, group, kill)
         if hits:
             if group == self.game.coins:
-                self.coincount += 1
+                self.changecoins += 1
             if group == self.game.doors:
-                self.gamelevel += 1
-        pass
+                self.changelevel += 1
 
-    # Updating the sprite
+    # Updating the sprite and checking for collisions
     def update(self):
         self.getkeys()
         self.x += self.vx * self.game.dt
@@ -102,6 +97,7 @@ class Enemy (Sprite):
             self.vx *= 0.7071
             self.vy *= 0.7071
 
+    # Enemy bouncing off of walls
     def collidewithwalls(self, dir):
         if dir == 'x':
             hits = pg.sprite.spritecollide(self, self.game.walls, False)
@@ -122,6 +118,7 @@ class Enemy (Sprite):
                 self.vy = -self.vy
                 self.rect.y = self.y
 
+    # Updating the sprite and checking for collisions
     def update(self):
         self.x += self.vx * self.game.dt
         self.y += self.vy * self.game.dt
