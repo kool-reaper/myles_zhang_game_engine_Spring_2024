@@ -46,6 +46,7 @@ class Game:
         self.clock = pg.time.Clock()
         pg.key.set_repeat(500, 100)
         self.running = True
+        self.gamestate = "mainmenu"
         self.load_data()
         # Player statistics
         self.gamelevel = 0
@@ -64,7 +65,8 @@ class Game:
     def update_map(self):
         game_folder = path.dirname(__file__)
         map_folder = path.join(game_folder, 'maps')
-        if self.player.changelevel != 0:
+        if self.player.changelevel == True:
+            self.player.changelevel = False
             self.gamelevel += 1
             self.map_data = []
             with open(path.join(map_folder, 'map' + str(self.gamelevel) + '.txt'), 'rt') as f:
@@ -72,19 +74,27 @@ class Game:
                     self.map_data.append(line)
             self.new()
 
-    # Load saved game data
-    def load_data(self):
+    # Load game assets
+    def load_assets(self):
         game_folder = path.dirname(__file__)
         img_folder = path.join(game_folder, 'images')
-        self.map_data = []
         self.player_img = pg.image.load(path.join(img_folder, 'player.png')).convert_alpha()
+        self.playbtn_img = pg.image.load(path.join(img_folder, 'Play.png')).convert_alpha()
+        self.playbtn = Button(self, 512, 544, self.playbtn_img, 1)
+        self.optbtn_img = pg.image.load(path.join(img_folder, 'Play.png')).convert_alpha()
+        self.optbtn = Button(self, 512, 640, self.playbtn_img, 1)
+
+    # Load saved game data
+    def load_data(self):
+        self.map_data = []
+        self.load_assets()
         self.load_map()
 
     # Updates player statistics
     def updatestats(self, stat):
         if stat == "coins":
-            if self.player.changecoins == 1:
-                self.player.changecoins = 0
+            if self.player.changecoins == True:
+                self.player.changecoins = False
                 self.coincount += 1
 
     # init all variables, setup groups, instantiate classes
@@ -113,8 +123,12 @@ class Game:
         while self.playing:
             self.dt = self.clock.tick(FPS) / 1000
             self.events()
-            self.update()
-            self.draw()
+            if self.gamestate == "mainmenu":
+                self.main_menu()
+            if self.gamestate == "playing":
+                self.update()
+                self.draw()
+
         while self.running:
             self.events()
 
@@ -161,8 +175,11 @@ class Game:
         surface.blit(text_surface, text_rect)
 
     # Showing the start screen
-    def start_screen():
-        pass
+    def main_menu(self):
+        self.screen.fill(GRAY)
+        if self.playbtn.draw(self.screen):
+            self.gamestate = "playing"
+        pg.display.flip()
 
     # Showing the go screen
     def go_screen():

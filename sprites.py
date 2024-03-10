@@ -63,9 +63,9 @@ class Player(Sprite):
         hits = pg.sprite.spritecollide(self, group, kill)
         if hits:
             if group == self.game.coins:
-                self.changecoins += 1
+                self.changecoins = True
             if group == self.game.doors:
-                self.changelevel += 1
+                self.changelevel = True
 
     # Updating the sprite and checking for collisions
     def update(self):
@@ -171,3 +171,41 @@ class Door(Sprite):
         self.y = y
         self.rect.x = x * TILESIZE
         self.rect.y = y * TILESIZE
+
+# Button Class
+class Button():
+    def __init__(self, game, x, y, img, scale):
+        height = img.get_height()
+        width = img.get_width()
+        self.game = game
+        self.image = pg.transform.scale(img, (int(width + scale), int(height * scale)))
+        self.rect = self.image.get_rect()
+        self.rect.midtop = (x,y)
+        self.clicked = False
+
+    # Drawing the button
+    def draw(self, surface):
+        action = False
+
+        # Finding mouse location
+        mousepos = pg.mouse.get_pos()
+
+        # Checking mouse and button status
+        if self.rect.collidepoint(mousepos):
+            if pg.mouse.get_pressed()[0] == 1 and self.clicked == False:
+                self.clicked = True
+                action = False
+            if pg.mouse.get_pressed()[0] == 0 and self.clicked == True:
+                self.clicked = False
+                action = True
+        else:
+            self.clicked = False
+
+        if pg.mouse.get_pressed()[0] == 0:
+            self.clicked = False
+
+        # Drawing the button
+        surface.blit(self.image, (self.rect.x, self.rect.y))
+
+        # Return pressed or not pressed
+        return action

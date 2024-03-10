@@ -15,6 +15,7 @@ BGCOLOR = (135, 206, 235)
 RED = (255, 100, 100)
 BEIGE = (245, 245, 220)
 BLACK = (0, 0, 0)
+GRAY = (206, 204, 197)
 
 # game settings
 FPS = 30
