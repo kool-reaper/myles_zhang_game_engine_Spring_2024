@@ -81,21 +81,14 @@ class Game:
         self.player_img = pg.image.load(path.join(img_folder, 'player.png')).convert_alpha()
         self.playbtn_img = pg.image.load(path.join(img_folder, 'Play.png')).convert_alpha()
         self.playbtn = Button(self, 512, 544, self.playbtn_img, 1)
-        self.optbtn_img = pg.image.load(path.join(img_folder, 'Play.png')).convert_alpha()
-        self.optbtn = Button(self, 512, 640, self.playbtn_img, 1)
+        self.youdied_img = pg.image.load(path.join(img_folder, 'youdied.jpg')).convert_alpha()
+        self.youdiedbtn = Button(self, 512, 75, self.youdied_img, 1)
 
     # Load saved game data
     def load_data(self):
         self.map_data = []
         self.load_assets()
         self.load_map()
-
-    # Updates player statistics
-    def updatestats(self, stat):
-        if stat == "coins":
-            if self.player.changecoins == True:
-                self.player.changecoins = False
-                self.coincount += 1
 
     # init all variables, setup groups, instantiate classes
     def new(self):
@@ -129,6 +122,8 @@ class Game:
             if self.gamestate == "playing":
                 self.update()
                 self.draw()
+            if self.gamestate == "gameover":
+                self.gameover()
 
         while self.running:
             self.events()
@@ -142,7 +137,6 @@ class Game:
     def update(self):
         self.game_sprites.update()
         self.update_map()
-        self.updatestats("coins")
 
     # drawing the grid
     def draw_grid(self):
@@ -180,6 +174,16 @@ class Game:
         self.screen.fill(GRAY)
         if self.playbtn.draw(self.screen):
             self.gamestate = "playing"
+        pg.display.flip()
+
+    # Died function
+    def gameover(self):
+        self.screen.fill(DARKGRAY)
+        if self.youdiedbtn.draw(self.screen):
+            self.gamestate = "mainmenu"
+            self.new()
+            self.coincount = 0
+            self.gamelevel = 0
         pg.display.flip()
 
     # Showing the go screen

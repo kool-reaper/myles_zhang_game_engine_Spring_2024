@@ -17,7 +17,6 @@ class Player(Sprite):
         self.vx, self.vy = 0, 0
         self.x = x * TILESIZE
         self.y = y * TILESIZE
-        self.changecoins = 0
         self.changelevel = 0
 
     # Checking which keys are pressed
@@ -63,9 +62,11 @@ class Player(Sprite):
         hits = pg.sprite.spritecollide(self, group, kill)
         if hits:
             if group == self.game.coins:
-                self.changecoins = True
+                self.game.coincount += 1
             if group == self.game.doors:
                 self.changelevel = True
+            if group == self.game.enemies:
+                self.game.gamestate = "gameover"
 
     # Updating the sprite and checking for collisions
     def update(self):
@@ -78,11 +79,12 @@ class Player(Sprite):
         self.collidewithwalls('y')
         self.collidewithobj(self.game.coins, True)
         self.collidewithobj(self.game.doors, False)
+        self.collidewithobj(self.game.enemies, False)
 
 class Enemy (Sprite):
     # Initialize class
     def __init__(self, game, x, y):
-        self.groups = game.game_sprites
+        self.groups = game.game_sprites, game.enemies
         Sprite.__init__(self, self.groups)
         self.game = game
         self.image = pg.Surface((TILESIZE, TILESIZE))
