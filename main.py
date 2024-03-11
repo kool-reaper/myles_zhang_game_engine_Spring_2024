@@ -99,7 +99,8 @@ class Game:
 
     # init all variables, setup groups, instantiate classes
     def new(self):
-        self.all_sprites = pg.sprite.Group()
+        self.game_sprites = pg.sprite.Group()
+        self.mainmenu_sprites = pg.sprite.Group()
         self.walls = pg.sprite.Group()
         self.coins = pg.sprite.Group()
         self.enemies = pg.sprite.Group()
@@ -139,7 +140,7 @@ class Game:
 
     # updating the display and positions
     def update(self):
-        self.all_sprites.update()
+        self.game_sprites.update()
         self.update_map()
         self.updatestats("coins")
 
@@ -154,7 +155,7 @@ class Game:
     def draw(self):
         self.screen.fill(BGCOLOR)
         self.draw_grid()
-        self.all_sprites.draw(self.screen)
+        self.game_sprites.draw(self.screen)
         self.draw_text(self.screen, "Coins: " + str(self.coincount), 42, BLACK, 1, 1)
         pg.display.flip()
 

@@ -9,7 +9,7 @@ from pygame.sprite import Sprite
 class Player(Sprite):
     # Initialize class
     def __init__(self, game, x, y):
-        self.groups = game.all_sprites
+        self.groups = game.game_sprites
         Sprite.__init__(self, self.groups)
         self.game = game
         self.image = game.player_img
@@ -82,7 +82,7 @@ class Player(Sprite):
 class Enemy (Sprite):
     # Initialize class
     def __init__(self, game, x, y):
-        self.groups = game.all_sprites
+        self.groups = game.game_sprites
         Sprite.__init__(self, self.groups)
         self.game = game
         self.image = pg.Surface((TILESIZE, TILESIZE))
@@ -132,7 +132,7 @@ class Enemy (Sprite):
 class Wall(Sprite):
     # Initialize Class
     def __init__(self, game, x, y):
-        self.groups = game.all_sprites, game.walls
+        self.groups = game.game_sprites, game.walls
         Sprite.__init__(self, self.groups)
         self.game = game
         self.image = pg.Surface((TILESIZE, TILESIZE))
@@ -147,7 +147,7 @@ class Wall(Sprite):
 class Coin(Sprite):
     # Initialize Class
     def __init__(self, game, x, y):
-        self.groups = game.all_sprites, game.coins
+        self.groups = game.game_sprites, game.coins
         Sprite.__init__(self, self.groups)
         self.game = game
         self.image = pg.Surface((TILESIZE, TILESIZE))
@@ -161,7 +161,7 @@ class Coin(Sprite):
 class Door(Sprite):
     # Initialize Class
     def __init__(self, game, x, y):
-        self.groups = game.all_sprites, game.doors
+        self.groups = game.game_sprites, game.doors
         Sprite.__init__(self, self.groups)
         self.game = game
         self.image = pg.Surface((TILESIZE, TILESIZE))
