@@ -31,6 +31,11 @@ class Player(Sprite):
             self.vy = -PLAYER_SPEED
         if keys[pg.K_DOWN] or keys[pg.K_s]:
             self.vy = PLAYER_SPEED
+        if keys[pg.K_r]:
+            self.game.gamestate = "mainmenu"
+            self.game.coincount = 0
+            self.game.gamelevel = 0
+            self.game.new()
         if self.vx != 0 and self.vy != 0:
             # Yay math!
             self.vx *= 0.7071

@@ -181,9 +181,9 @@ class Game:
         self.screen.fill(DARKGRAY)
         if self.youdiedbtn.draw(self.screen):
             self.gamestate = "mainmenu"
-            self.new()
             self.coincount = 0
             self.gamelevel = 0
+            self.new()
         pg.display.flip()
 
     # Showing the go screen
