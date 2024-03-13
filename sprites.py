@@ -86,6 +86,7 @@ class Player(Sprite):
         self.collidewithobj(self.game.doors, False)
         self.collidewithobj(self.game.enemies, False)
 
+# Enemy Class
 class Enemy (Sprite):
     # Initialize class
     def __init__(self, game, x, y):
@@ -134,7 +135,6 @@ class Enemy (Sprite):
         self.rect.y = self.y
         self.collidewithwalls("y")
 
-
 # Wall Class
 class Wall(Sprite):
     # Initialize Class
@@ -165,6 +165,7 @@ class Coin(Sprite):
         self.rect.x = x * TILESIZE
         self.rect.y = y * TILESIZE
 
+# Door Class
 class Door(Sprite):
     # Initialize Class
     def __init__(self, game, x, y):

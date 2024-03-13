@@ -21,3 +21,4 @@ DARKGRAY = (25, 25, 25)
 # game settings
 FPS = 30
 PLAYER_SPEED = 300
+ENEMYCOUNT = 2

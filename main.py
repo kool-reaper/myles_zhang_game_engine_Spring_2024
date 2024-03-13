@@ -6,7 +6,7 @@ import pygame as pg
 from settings import *
 from sprites import *
 import sys
-from random import randint
+import random
 from os import path
 from time import sleep
 
@@ -92,6 +92,7 @@ class Game:
 
     # init all variables, setup groups, instantiate classes
     def new(self):
+        self.spawnplacelist = []
         self.game_sprites = pg.sprite.Group()
         self.mainmenu_sprites = pg.sprite.Group()
         self.walls = pg.sprite.Group()
@@ -108,8 +109,15 @@ class Game:
                     Coin(self, col, row)
                 if tile == 'D':
                     Door(self, col, row)
-                if tile == "E":
-                    Enemy(self, col, row)
+                if tile == ".":
+                    self.spawnplacelist.append((col, row))
+        
+        i = 1
+        while i <= ENEMYCOUNT:
+            tile = random.choice(self.spawnplacelist)
+            Enemy(self, tile[0], tile[1])
+            self.spawnplacelist.remove(tile)
+            i += 1
 
     # run method
     def run(self):
@@ -169,14 +177,14 @@ class Game:
         text_rect.topleft = (x*TILESIZE,y*TILESIZE)
         surface.blit(text_surface, text_rect)
 
-    # Showing the start screen
+    # displaying start screen
     def main_menu(self):
         self.screen.fill(GRAY)
         if self.playbtn.draw(self.screen):
             self.gamestate = "playing"
         pg.display.flip()
 
-    # Died function
+    # death function
     def gameover(self):
         self.screen.fill(DARKGRAY)
         if self.youdiedbtn.draw(self.screen):
@@ -187,13 +195,10 @@ class Game:
         pg.display.flip()
 
     # Showing the go screen
-    def go_screen():
-        pass
 
                 
 
 # Making and running the window
 g = Game()
 while True:
-    g.new()
     g.run()
