@@ -46,7 +46,7 @@ class Game:
         self.clock = pg.time.Clock()
         pg.key.set_repeat(500, 100)
         self.running = True
-        self.gamestate = "mainmenu"
+        self.gamestate = "playing"
         self.load_data()
         # Player statistics
         self.gamelevel = 0
@@ -54,12 +54,14 @@ class Game:
 
     # Loading map for the first time
     def load_map(self):
+        self.gamelevel = 0
         game_folder = path.dirname(__file__)
         map_folder = path.join(game_folder, 'maps')
         with open(path.join(map_folder, 'map0.txt'), 'rt') as f:
             for line in f:
                 self.map_data.append(line)
-        self.new()
+        self.enemycount = ENEMYCOUNT
+        self.new(False)
 
     # Updating the map when the level changes
     def update_map(self):
@@ -72,17 +74,21 @@ class Game:
             with open(path.join(map_folder, 'map' + str(self.gamelevel) + '.txt'), 'rt') as f:
                 for line in f:
                     self.map_data.append(line)
-            self.new()
+            self.new(False)
 
     # Load game assets
     def load_assets(self):
         game_folder = path.dirname(__file__)
         img_folder = path.join(game_folder, 'images')
         self.player_img = pg.image.load(path.join(img_folder, 'player.png')).convert_alpha()
-        self.playbtn_img = pg.image.load(path.join(img_folder, 'Play.png')).convert_alpha()
+        self.playbtn_img = pg.image.load(path.join(img_folder, 'play.png')).convert_alpha()
         self.playbtn = Button(self, 512, 544, self.playbtn_img, 1)
-        self.youdied_img = pg.image.load(path.join(img_folder, 'youdied.jpg')).convert_alpha()
-        self.youdiedbtn = Button(self, 512, 75, self.youdied_img, 1)
+        self.youdied_img = pg.image.load(path.join(img_folder, 'Gameover.png')).convert_alpha()
+        self.youdiedimg = Image(self, 512, 75, self.youdied_img, 0.5)
+        self.youwin_img = pg.image.load(path.join(img_folder, 'Youwin.jpg')).convert_alpha()
+        self.youwinimg = Image(self, 518, 75, self.youwin_img, 2)
+        self.restart_img = pg.image.load(path.join(img_folder, 'Restart.png')).convert_alpha()
+        self.restartbtn = Button(self, 512, 550, self.restart_img, 3)
 
     # Load saved game data
     def load_data(self):
@@ -91,7 +97,14 @@ class Game:
         self.load_map()
 
     # init all variables, setup groups, instantiate classes
-    def new(self):
+    def new(self, reset):
+        if reset == True:
+            self.map_data = []
+            game_folder = path.dirname(__file__)
+            map_folder = path.join(game_folder, 'maps')
+            with open(path.join(map_folder, 'map0.txt'), 'rt') as f:
+                for line in f:
+                    self.map_data.append(line)
         self.spawnplacelist = []
         self.game_sprites = pg.sprite.Group()
         self.mainmenu_sprites = pg.sprite.Group()
@@ -113,7 +126,7 @@ class Game:
                     self.spawnplacelist.append((col, row))
         
         i = 1
-        while i <= ENEMYCOUNT:
+        while i <= self.enemycount:
             tile = random.choice(self.spawnplacelist)
             Enemy(self, tile[0], tile[1])
             self.spawnplacelist.remove(tile)
@@ -132,6 +145,8 @@ class Game:
                 self.draw()
             if self.gamestate == "gameover":
                 self.gameover()
+            if self.gamestate == "gamewon":
+                self.gamewon()
 
         while self.running:
             self.events()
@@ -186,12 +201,27 @@ class Game:
 
     # death function
     def gameover(self):
-        self.screen.fill(DARKGRAY)
-        if self.youdiedbtn.draw(self.screen):
-            self.gamestate = "mainmenu"
+        self.screen.fill(BLACK)
+        self.youdiedimg.draw(self.screen)
+        if self.restartbtn.draw(self.screen):
             self.coincount = 0
             self.gamelevel = 0
-            self.new()
+            self.enemycount = ENEMYCOUNT
+            self.update_map()
+            self.new(True)
+            self.gamestate = "mainmenu"
+        pg.display.flip()
+
+    # Win function
+    def gamewon(self):
+        self.screen.fill(BLACK)
+        self.youwinimg.draw(self.screen)
+        if self.restartbtn.draw(self.screen):
+            self.gamelevel = 0
+            self.enemycount += 1
+            self.update_map()
+            self.new(True)
+            self.gamestate = "mainmenu"
         pg.display.flip()
 
     # Showing the go screen

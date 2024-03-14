@@ -17,8 +17,10 @@ BEIGE = (245, 245, 220)
 BLACK = (0, 0, 0)
 GRAY = (206, 204, 197)
 DARKGRAY = (25, 25, 25)
+BLACK = (0, 0, 0)
 
 # game settings
 FPS = 30
 PLAYER_SPEED = 300
 ENEMYCOUNT = 2
+MAXMAP = 4

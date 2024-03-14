@@ -69,7 +69,10 @@ class Player(Sprite):
             if group == self.game.coins:
                 self.game.coincount += 1
             if group == self.game.doors:
-                self.changelevel = True
+                if self.game.gamelevel == MAXMAP:
+                    self.game.gamestate = "gamewon"
+                else:
+                    self.changelevel = True
             if group == self.game.enemies:
                 self.game.gamestate = "gameover"
 
@@ -186,7 +189,7 @@ class Button():
         height = img.get_height()
         width = img.get_width()
         self.game = game
-        self.image = pg.transform.scale(img, (int(width + scale), int(height * scale)))
+        self.image = pg.transform.scale(img, (int(width * scale), int(height * scale)))
         self.rect = self.image.get_rect()
         self.rect.midtop = (x,y)
         self.clicked = False
@@ -217,3 +220,18 @@ class Button():
 
         # Return pressed or not pressed
         return action
+    
+# Image Class
+class Image():
+    def __init__(self, game, x, y, img, scale):
+        height = img.get_height()
+        width = img.get_width()
+        self.game = game
+        self.image = pg.transform.scale(img, (int(width * scale), int(height * scale)))
+        self.rect = self.image.get_rect()
+        self.rect.midtop = (x,y)
+        self.clicked = False
+
+    # Displaying the Image
+    def draw(self, surface):
+        surface.blit(self.image, (self.rect.x, self.rect.y))
