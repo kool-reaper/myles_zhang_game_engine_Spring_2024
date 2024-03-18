@@ -18,6 +18,7 @@ class Player(Sprite):
         self.x = x * TILESIZE
         self.y = y * TILESIZE
         self.changelevel = 0
+        self.p_pressed = False
 
     # Checking which keys are pressed
     def getkeys(self):
@@ -35,7 +36,15 @@ class Player(Sprite):
             self.game.gamestate = "mainmenu"
             self.game.coincount = 0
             self.game.gamelevel = 0
-            self.game.new()
+            self.game.new(True)
+        if keys[pg.K_p]:
+            self.p_pressed = True
+        if keys[pg.K_p] == False and self.p_pressed == True:
+            self.p_pressed = False
+            self.game.gamelevel = 0
+            self.game.enemycount += 1
+            self.game.update_map()
+            self.game.new(True)
         if self.vx != 0 and self.vy != 0:
             # Yay math!
             self.vx *= 0.7071
