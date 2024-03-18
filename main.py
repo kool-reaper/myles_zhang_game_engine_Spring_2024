@@ -122,6 +122,8 @@ class Game:
                     Coin(self, col, row)
                 if tile == 'D':
                     Door(self, col, row)
+                if tile == 'E':
+                    Enemy(self, col, row)
                 if tile == ".":
                     self.spawnplacelist.append((col, row))
         
