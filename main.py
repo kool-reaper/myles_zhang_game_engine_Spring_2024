@@ -60,7 +60,7 @@ class Game:
         with open(path.join(map_folder, 'map0.txt'), 'rt') as f:
             for line in f:
                 self.map_data.append(line)
-        self.enemycount = ENEMYCOUNT
+        self.enemycount = INITIALENEMYCOUNT
         self.new(False)
 
     # Updating the map when the level changes
@@ -206,7 +206,7 @@ class Game:
         if self.restartbtn.draw(self.screen):
             self.coincount = 0
             self.gamelevel = 0
-            self.enemycount = ENEMYCOUNT
+            self.enemycount = INITIALENEMYCOUNT
             self.update_map()
             self.new(True)
             self.gamestate = "mainmenu"

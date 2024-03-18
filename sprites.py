@@ -184,7 +184,11 @@ class Door(Sprite):
         self.rect.y = y * TILESIZE
 
 # Button Class
+# Taken from a tutorial by Coding With Russ on Youtube: https://www.youtube.com/watch?v=G8MYGDf_9ho
+# Changed the code to not give an output when holding click over button; Only gives one output when mouse is released
+# This way, you cannot activate multiple buttons with one click
 class Button():
+    # Initialize Class
     def __init__(self, game, x, y, img, scale):
         height = img.get_height()
         width = img.get_width()
@@ -223,6 +227,7 @@ class Button():
     
 # Image Class
 class Image():
+    # Initialize Class
     def __init__(self, game, x, y, img, scale):
         height = img.get_height()
         width = img.get_width()
