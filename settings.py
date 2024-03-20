@@ -20,7 +20,7 @@ DARKGRAY = (25, 25, 25)
 BLACK = (0, 0, 0)
 
 # game settings
-FPS = 30
+FPS = 144
 PLAYER_SPEED = 300
 INITIALENEMYCOUNT = 2
 MAXMAP = 4

@@ -46,7 +46,7 @@ class Game:
         self.clock = pg.time.Clock()
         pg.key.set_repeat(500, 100)
         self.running = True
-        self.gamestate = "playing"
+        self.gamestate = "mainmenu"
         self.load_data()
         # Player statistics
         self.gamelevel = 0
