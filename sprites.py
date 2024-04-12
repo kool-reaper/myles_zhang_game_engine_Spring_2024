@@ -4,6 +4,19 @@
 import pygame as pg
 from settings import *
 from pygame.sprite import Sprite
+from os import path
+
+# Spritesheet class
+class Spritesheet:
+    # utility class for loading and parsing spritesheets
+    def __init__(self, filename):
+        self.spritesheet = pg.image.load(filename).convert()
+
+    def get_image(self, x, y, width, height):
+        image = pg.Surface((width, height))
+        image.blit(self.spritesheet, (0, 0), (x, y, width, height))
+        image = pg.transform.scale(image, (width, height))
+        return image
 
 # Player Class
 class Player(Sprite):
@@ -19,6 +32,23 @@ class Player(Sprite):
         self.y = y * TILESIZE
         self.changelevel = 0
         self.p_pressed = False
+        self.spritesheet = Spritesheet(path.join(img_folder, PLAYERSPRITESHEET))
+        self.load_images()
+        self.current_frame = 0
+        self.last_update = 0
+
+    def load_images(self):
+        self.standing_frames = [self.spritesheet.get_image(0,0, 32, 32),  self.spritesheet.get_image(32,0, 32, 32)]
+
+    def animate(self):
+        now = pg.time.get_ticks()
+        if now - self.last_update > 350:
+            self.last_update = now
+            self.current_frame = (self.current_frame + 1) % len(self.standing_frames)
+            bottom = self.rect.bottom
+            self.image = self.standing_frames[self.current_frame]
+            self.rect = self.image.get_rect()
+            self.rect.bottom = bottom
 
     # Checking which keys are pressed
     def getkeys(self):
@@ -87,6 +117,7 @@ class Player(Sprite):
 
     # Updating the sprite and checking for collisions
     def update(self):
+        self.animate()
         self.getkeys()
         self.x += self.vx * self.game.dt
         self.y += self.vy * self.game.dt
@@ -97,20 +128,6 @@ class Player(Sprite):
         self.collidewithobj(self.game.coins, True)
         self.collidewithobj(self.game.doors, False)
         self.collidewithobj(self.game.enemies, False)
-
-# Spritesheet class
-class Spritesheet:
-    # utility class for loading and parsing spritesheets
-    def __init__(self, filename):
-        self.spritesheet = pg.image.load(filename).convert()
-
-    def get_image(self, x, y, width, height):
-        # grab an image out of a larger spritesheet
-        image = pg.Surface((width, height))
-        image.blit(self.spritesheet, (0, 0), (x, y, width, height))
-        # image = pg.transform.scale(image, (width, height))
-        image = pg.transform.scale(image, (width * 4, height * 4))
-        return image
 
 # Enemy Class
 class Enemy (Sprite):

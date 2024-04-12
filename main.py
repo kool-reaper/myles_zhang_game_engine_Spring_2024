@@ -65,7 +65,6 @@ class Game:
 
     # Updating the map when the level changes
     def update_map(self):
-        game_folder = path.dirname(__file__)
         map_folder = path.join(game_folder, 'maps')
         if self.player.changelevel == True:
             self.player.changelevel = False
@@ -78,7 +77,6 @@ class Game:
 
     # Load game assets
     def load_assets(self):
-        game_folder = path.dirname(__file__)
         img_folder = path.join(game_folder, 'images')
         self.player_img = pg.image.load(path.join(img_folder, 'player.png')).convert_alpha()
         self.playbtn_img = pg.image.load(path.join(img_folder, 'play.png')).convert_alpha()
@@ -130,6 +128,7 @@ class Game:
         i = 1
         while i <= self.enemycount:
             tile = random.choice(self.spawnplacelist)
+            print(str(tile))
             Enemy(self, tile[0], tile[1])
             self.spawnplacelist.remove(tile)
             i += 1

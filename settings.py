@@ -1,5 +1,7 @@
 # this file was created by the one and only Myles Zhang
 
+from os import path
+
 # display settings
 WIDTH = 1024
 HEIGHT = 768
@@ -24,3 +26,7 @@ FPS = 144
 PLAYER_SPEED = 300
 INITIALENEMYCOUNT = 2
 MAXMAP = 4
+PLAYERSPRITESHEET = "spritesheet.png"
+
+game_folder = path.dirname(__file__)
+img_folder = path.join(game_folder, 'images')
