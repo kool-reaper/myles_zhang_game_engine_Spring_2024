@@ -275,7 +275,6 @@ class Image():
         self.image = pg.transform.scale(img, (int(width * scale), int(height * scale)))
         self.rect = self.image.get_rect()
         self.rect.midtop = (x,y)
-        self.clicked = False
 
     # Displaying the Image
     def draw(self, surface):

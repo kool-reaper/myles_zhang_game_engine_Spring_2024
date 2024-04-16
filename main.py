@@ -51,6 +51,30 @@ class Game:
         # Player statistics
         self.gamelevel = 0
         self.coincount = 0
+        self.characternumber = 0
+        self.characterlist = ["Tyler", "Adrian"]
+
+    # Load game assets
+    def load_assets(self):
+        img_folder = path.join(game_folder, 'images')
+        self.player_img = pg.image.load(path.join(img_folder, 'player.png')).convert_alpha()
+        self.playbtn_img = pg.image.load(path.join(img_folder, 'play.png')).convert_alpha()
+        self.playbtn = Button(self, 512, 544, self.playbtn_img, 1)
+        self.youdied_img = pg.image.load(path.join(img_folder, 'Gameover.png')).convert_alpha()
+        self.youdiedimg = Image(self, 512, 75, self.youdied_img, 0.5)
+        self.youwin_img = pg.image.load(path.join(img_folder, 'Youwin.jpg')).convert_alpha()
+        self.youwinimg = Image(self, 518, 75, self.youwin_img, 2)
+        self.restart_img = pg.image.load(path.join(img_folder, 'Restart.png')).convert_alpha()
+        self.restartbtn = Button(self, 512, 550, self.restart_img, 3)
+        self.left_img = pg.image.load(path.join(img_folder, 'Leftbutton.png')).convert_alpha()
+        self.leftbtn = Button(self, 312, 224, self.left_img, 1)
+        self.right_img = pg.image.load(path.join(img_folder, 'Rightbutton.png')).convert_alpha()
+        self.rightbtn = Button(self, 712, 224, self.right_img, 1)
+        self.Tyler_img = pg.image.load(path.join(img_folder, 'Tyler.png')).convert_alpha()
+        self.Tyler = Image(self, 512, 200, self.Tyler_img, 4)
+        self.Adrian_img = pg.image.load(path.join(img_folder, 'Adrian.png')).convert_alpha()
+        self.Adrian = Image(self, 512, 200, self.Adrian_img, 4)
+
 
     # Loading map for the first time
     def load_map(self):
@@ -74,19 +98,6 @@ class Game:
                 for line in f:
                     self.map_data.append(line)
             self.new(False)
-
-    # Load game assets
-    def load_assets(self):
-        img_folder = path.join(game_folder, 'images')
-        self.player_img = pg.image.load(path.join(img_folder, 'player.png')).convert_alpha()
-        self.playbtn_img = pg.image.load(path.join(img_folder, 'play.png')).convert_alpha()
-        self.playbtn = Button(self, 512, 544, self.playbtn_img, 1)
-        self.youdied_img = pg.image.load(path.join(img_folder, 'Gameover.png')).convert_alpha()
-        self.youdiedimg = Image(self, 512, 75, self.youdied_img, 0.5)
-        self.youwin_img = pg.image.load(path.join(img_folder, 'Youwin.jpg')).convert_alpha()
-        self.youwinimg = Image(self, 518, 75, self.youwin_img, 2)
-        self.restart_img = pg.image.load(path.join(img_folder, 'Restart.png')).convert_alpha()
-        self.restartbtn = Button(self, 512, 550, self.restart_img, 3)
 
     # Load saved game data
     def load_data(self):
@@ -198,6 +209,23 @@ class Game:
         self.screen.fill(GRAY)
         if self.playbtn.draw(self.screen):
             self.gamestate = "playing"
+
+        if self.leftbtn.draw(self.screen):
+            if self.characternumber == len(self.characterlist) - 1:
+                self.characternumber = 0
+            else:
+                self.characternumber -= 1
+        if self.rightbtn.draw(self.screen):
+            if self.characternumber == len(self.characterlist) - 1:
+                self.characternumber = 0
+            else:
+                self.characternumber += 1
+
+        if self.characternumber == 0:
+            self.Tyler.draw(self.screen)
+        if self.characternumber == 1:
+            self.Adrian.draw(self.screen)
+        
         pg.display.flip()
 
     # death function
