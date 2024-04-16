@@ -47,12 +47,13 @@ class Game:
         pg.key.set_repeat(500, 100)
         self.running = True
         self.gamestate = "mainmenu"
-        self.load_data()
         # Player statistics
         self.gamelevel = 0
         self.coincount = 0
+        self.coinspawncount = INITIALCOINCOUNT
         self.characternumber = 0
-        self.characterlist = ["Tyler", "Adrian"]
+        self.characterlist = ["Tyler", "Adrian", "Myles"]
+        self.load_assets()
 
     # Load game assets
     def load_assets(self):
@@ -74,6 +75,8 @@ class Game:
         self.Tyler = Image(self, 512, 200, self.Tyler_img, 4)
         self.Adrian_img = pg.image.load(path.join(img_folder, 'Adrian.png')).convert_alpha()
         self.Adrian = Image(self, 512, 200, self.Adrian_img, 4)
+        self.Myles_img = pg.image.load(path.join(img_folder, 'Myles.png')).convert_alpha()
+        self.Myles = Image(self, 512, 200, self.Myles_img, 4)
 
 
     # Loading map for the first time
@@ -99,11 +102,11 @@ class Game:
                     self.map_data.append(line)
             self.new(False)
 
-    # Load saved game data
-    def load_data(self):
-        self.map_data = []
-        self.load_assets()
-        self.load_map()
+    # # Load saved game data
+    # def load_data(self):
+    #     self.map_data = []
+    #     self.load_assets()
+    #     self.load_map()
 
     # init all variables, setup groups, instantiate classes
     def new(self, reset):
@@ -127,8 +130,6 @@ class Game:
                     Wall(self, col, row)
                 if tile == 'P':
                     self.player = Player(self, col, row)
-                if tile == 'C':
-                    Coin(self, col, row)
                 if tile == 'D':
                     Door(self, col, row)
                 if tile == 'E':
@@ -138,11 +139,21 @@ class Game:
         
         i = 1
         while i <= self.enemycount:
-            tile = random.choice(self.spawnplacelist)
-            print(str(tile))
-            Enemy(self, tile[0], tile[1])
-            self.spawnplacelist.remove(tile)
+            enemytile = random.choice(self.spawnplacelist)
+            print(str(enemytile))
+            Enemy(self, enemytile[0], enemytile[1])
+            self.spawnplacelist.remove(enemytile)
             i += 1
+        
+
+        if self.characternumber == 0:
+            self.coinspawncount = 6
+        o = 1
+        while o <= self.coinspawncount:
+            cointile = random.choice(self.spawnplacelist)
+            Coin(self, cointile[0], cointile[1])
+            self.spawnplacelist.remove(cointile)
+            o += 1
 
     # run method
     def run(self):
@@ -209,22 +220,22 @@ class Game:
         self.screen.fill(GRAY)
         if self.playbtn.draw(self.screen):
             self.gamestate = "playing"
+            self.map_data = []
+            self.load_map()
 
+        # Character selection
         if self.leftbtn.draw(self.screen):
-            if self.characternumber == len(self.characterlist) - 1:
-                self.characternumber = 0
-            else:
-                self.characternumber -= 1
+            self.characternumber -= 1
         if self.rightbtn.draw(self.screen):
-            if self.characternumber == len(self.characterlist) - 1:
-                self.characternumber = 0
-            else:
-                self.characternumber += 1
+            self.characternumber += 1
+        self.characternumber = self.characternumber % len(self.characterlist)
 
         if self.characternumber == 0:
             self.Tyler.draw(self.screen)
-        if self.characternumber == 1:
+        elif self.characternumber == 1:
             self.Adrian.draw(self.screen)
+        elif self.characternumber == 2:
+            self.Myles.draw(self.screen)
         
         pg.display.flip()
 
