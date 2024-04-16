@@ -33,14 +33,15 @@ class Player(Sprite):
         self.changelevel = 0
         self.p_pressed = False
         self.spritesheet = Spritesheet(path.join(img_folder, PLAYERSPRITESHEET))
-        self.load_images()
         self.current_frame = 0
         self.last_update = 0
 
-    def load_images(self):
-        self.standing_frames = [self.spritesheet.get_image(0,0, 32, 32),  self.spritesheet.get_image(32,0, 32, 32)]
-
     def animate(self):
+        if self.game.characternumber == 0:
+            self.standing_frames = [self.spritesheet.get_image(0, 0, 32, 32),  self.spritesheet.get_image(32, 0, 32, 32)]
+        if self.game.characternumber == 1:
+            self.standing_frames = [self.spritesheet.get_image(0, 32, 32, 32),  self.spritesheet.get_image(32, 32, 32, 32)]
+        
         now = pg.time.get_ticks()
         if now - self.last_update > 350:
             self.last_update = now
