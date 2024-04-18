@@ -53,6 +53,7 @@ class Game:
         self.coinspawncount = INITIALCOINCOUNT
         self.characternumber = 0
         self.characterlist = ["Tyler", "Adrian", "Myles"]
+        self.startinglives = INITIALSTARTINGLIVES
         self.load_assets()
 
     # Load game assets
@@ -60,23 +61,19 @@ class Game:
         img_folder = path.join(game_folder, 'images')
         self.player_img = pg.image.load(path.join(img_folder, 'player.png')).convert_alpha()
         self.playbtn_img = pg.image.load(path.join(img_folder, 'play.png')).convert_alpha()
-        self.playbtn = Button(self, 512, 544, self.playbtn_img, 1)
-        self.youdied_img = pg.image.load(path.join(img_folder, 'Gameover.png')).convert_alpha()
-        self.youdiedimg = Image(self, 512, 75, self.youdied_img, 0.5)
-        self.youwin_img = pg.image.load(path.join(img_folder, 'Youwin.jpg')).convert_alpha()
-        self.youwinimg = Image(self, 518, 75, self.youwin_img, 2)
+        self.playbtn = Button(self, self.playbtn_img, 1)
         self.restart_img = pg.image.load(path.join(img_folder, 'Restart.png')).convert_alpha()
-        self.restartbtn = Button(self, 512, 550, self.restart_img, 3)
+        self.restartbtn = Button(self, self.restart_img, 1)
         self.left_img = pg.image.load(path.join(img_folder, 'Leftbutton.png')).convert_alpha()
-        self.leftbtn = Button(self, 312, 224, self.left_img, 1)
+        self.leftbtn = Button(self, self.left_img, 1)
         self.right_img = pg.image.load(path.join(img_folder, 'Rightbutton.png')).convert_alpha()
-        self.rightbtn = Button(self, 712, 224, self.right_img, 1)
+        self.rightbtn = Button(self, self.right_img, 1)
         self.Tyler_img = pg.image.load(path.join(img_folder, 'Tyler.png')).convert_alpha()
-        self.Tyler = Image(self, 512, 200, self.Tyler_img, 4)
+        self.Tyler = Image(self, self.Tyler_img, 4)
         self.Adrian_img = pg.image.load(path.join(img_folder, 'Adrian.png')).convert_alpha()
-        self.Adrian = Image(self, 512, 200, self.Adrian_img, 4)
+        self.Adrian = Image(self, self.Adrian_img, 4)
         self.Myles_img = pg.image.load(path.join(img_folder, 'Myles.png')).convert_alpha()
-        self.Myles = Image(self, 512, 200, self.Myles_img, 4)
+        self.Myles = Image(self, self.Myles_img, 4)
 
 
     # Loading map for the first time
@@ -221,28 +218,28 @@ class Game:
     # displaying start screen
     def main_menu(self):
         self.screen.fill(GRAY)
-        if self.playbtn.draw(self.screen):
+        if self.playbtn.draw(self.screen, 512, 544):
             self.gamestate = "playing"
             self.map_data = []
             self.load_map()
 
         # Character selection
-        if self.leftbtn.draw(self.screen):
+        if self.leftbtn.draw(self.screen, 312, 224):
             self.characternumber -= 1
-        if self.rightbtn.draw(self.screen):
+        if self.rightbtn.draw(self.screen, 712, 224):
             self.characternumber += 1
         self.characternumber = self.characternumber % len(self.characterlist)
 
         if self.characternumber == 0:
-            self.Tyler.draw(self.screen)
+            self.Tyler.draw(self.screen, 512, 200)
             self.draw_text(self.screen, "Tyler", 42, BLACK, "tm", 512, 130)
             self.draw_text(self.screen, "Spawns 2 extra coins", 42, BLACK, "tm", 512, 360)
         elif self.characternumber == 1:
-            self.Adrian.draw(self.screen)
+            self.Adrian.draw(self.screen, 512, 200)
             self.draw_text(self.screen, "Adrian", 42, BLACK, "tm", 512, 130)
             self.draw_text(self.screen, "Speed Bonus", 42, BLACK, "tm", 512, 360)
         elif self.characternumber == 2:
-            self.Myles.draw(self.screen)
+            self.Myles.draw(self.screen, 512, 200)
             self.draw_text(self.screen, "Myles", 42, BLACK, "tm", 512, 130)
             self.draw_text(self.screen, "Decreased Speed", 42, BLACK, "tm", 512, 360)
         
@@ -251,8 +248,8 @@ class Game:
     # death function
     def gameover(self):
         self.screen.fill(BLACK)
-        self.youdiedimg.draw(self.screen)
-        if self.restartbtn.draw(self.screen):
+        self.draw_text(self.screen, "YOU DIED", 200, WHITE, "tm", 512, 200)
+        if self.restartbtn.draw(self.screen, 512, 550):
             self.coincount = 0
             self.gamelevel = 0
             self.enemycount = INITIALENEMYCOUNT
@@ -265,7 +262,7 @@ class Game:
     # Win function
     def gamewon(self):
         self.screen.fill(BLACK)
-        self.youwinimg.draw(self.screen)
+        self.draw_text(self.screen, "ROUND COMPLETE", 200, WHITE, "tm", 512, 200)
         if self.restartbtn.draw(self.screen):
             self.gamelevel = 0
             self.enemycount += 1

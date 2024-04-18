@@ -237,21 +237,23 @@ class Door(Sprite):
 # This way, you cannot activate multiple buttons with one click
 class Button():
     # Initialize Class
-    def __init__(self, game, x, y, img, scale):
+    def __init__(self, game, img, scale):
         height = img.get_height()
         width = img.get_width()
         self.game = game
         self.image = pg.transform.scale(img, (int(width * scale), int(height * scale)))
         self.rect = self.image.get_rect()
-        self.rect.midtop = (x,y)
         self.clicked = False
 
     # Drawing the button
-    def draw(self, surface):
+    def draw(self, surface, x, y):
         action = False
 
         # Finding mouse location
         mousepos = pg.mouse.get_pos()
+
+        self.rect.midtop = (x,y)
+
 
         # Checking mouse and button status
         if self.rect.collidepoint(mousepos):
@@ -276,14 +278,14 @@ class Button():
 # Image Class
 class Image():
     # Initialize Class
-    def __init__(self, game, x, y, img, scale):
+    def __init__(self, game, img, scale):
         height = img.get_height()
         width = img.get_width()
         self.game = game
         self.image = pg.transform.scale(img, (int(width * scale), int(height * scale)))
         self.rect = self.image.get_rect()
-        self.rect.midtop = (x,y)
 
     # Displaying the Image
-    def draw(self, surface):
+    def draw(self, surface, x, y):
+        self.rect.midtop = (x,y)
         surface.blit(self.image, (self.rect.x, self.rect.y))

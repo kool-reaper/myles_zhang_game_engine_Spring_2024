@@ -16,10 +16,10 @@ LIGHTGRAY = (150, 150, 150)
 BGCOLOR = (135, 206, 235)
 RED = (255, 100, 100)
 BEIGE = (245, 245, 220)
-BLACK = (0, 0, 0)
 GRAY = (206, 204, 197)
 DARKGRAY = (25, 25, 25)
 BLACK = (0, 0, 0)
+WHITE = (255, 255, 255)
 
 # game settings
 FPS = 144
@@ -28,6 +28,7 @@ INITIALENEMYCOUNT = 2
 INITIALCOINCOUNT = 4
 MAXMAP = 4
 PLAYERSPRITESHEET = "spritesheet.png"
+INITIALSTARTINGLIVES = 3
 
 game_folder = path.dirname(__file__)
 img_folder = path.join(game_folder, 'images')
