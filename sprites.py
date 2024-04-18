@@ -42,10 +42,10 @@ class Player(Sprite):
             self.standing_frames = [self.spritesheet.get_image(0, 0, 32, 32),  self.spritesheet.get_image(32, 0, 32, 32)]
         if self.game.characternumber == 1:
             self.standing_frames = [self.spritesheet.get_image(0, 32, 32, 32),  self.spritesheet.get_image(32, 32, 32, 32)]
-            self.playerspeed = 400
+            self.playerspeed = 350
         if self.game.characternumber == 2:
             self.standing_frames = [self.spritesheet.get_image(0, 64, 32, 32),  self.spritesheet.get_image(32, 64, 32, 32)]
-            self.playerspeed = 200
+            self.playerspeed = 250
         
         now = pg.time.get_ticks()
         if now - self.last_update > 350:
@@ -63,15 +63,17 @@ class Player(Sprite):
         if keys[pg.K_LEFT] or keys[pg.K_a]:
             self.vx = -self.playerspeed
         if keys[pg.K_RIGHT] or keys[pg.K_d]:
-            self.vx = PLAYER_SPEED
+            self.vx = self.playerspeed
         if keys[pg.K_UP] or keys[pg.K_w]:
-            self.vy = -PLAYER_SPEED
+            self.vy = -self.playerspeed
         if keys[pg.K_DOWN] or keys[pg.K_s]:
-            self.vy = PLAYER_SPEED
+            self.vy = self.playerspeed
         if keys[pg.K_r]:
             self.game.gamestate = "mainmenu"
             self.game.coincount = 0
             self.game.gamelevel = 0
+            self.game.enemycount = INITIALENEMYCOUNT
+            self.game.coinspawncount = INITIALCOINCOUNT
             self.game.new(True)
         if keys[pg.K_p]:
             self.p_pressed = True

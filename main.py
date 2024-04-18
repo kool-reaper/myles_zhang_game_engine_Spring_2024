@@ -196,7 +196,7 @@ class Game:
         self.screen.fill(BGCOLOR)
         self.draw_grid()
         self.game_sprites.draw(self.screen)
-        self.draw_text(self.screen, "Coins: " + str(self.coincount), 42, BLACK, 1, 1)
+        self.draw_text(self.screen, "Coins: " + str(self.coincount), 42, BLACK, "tl", 48, 32)
         pg.display.flip()
 
     # input method
@@ -207,12 +207,15 @@ class Game:
                 self.quit()
 
     # Drawing text
-    def draw_text(self, surface, text, size, color, x, y):
+    def draw_text(self, surface, text, size, color, tltm, x, y):
         font_name = pg.font.match_font('arial')
         font = pg.font.Font(font_name, size)
         text_surface = font.render(text, True, color)
         text_rect = text_surface.get_rect()
-        text_rect.topleft = (x*TILESIZE,y*TILESIZE)
+        if tltm == "tl":
+            text_rect.topleft = (x,y)
+        if tltm == "tm":
+            text_rect.midtop = (x,y)
         surface.blit(text_surface, text_rect)
 
     # displaying start screen
@@ -232,10 +235,16 @@ class Game:
 
         if self.characternumber == 0:
             self.Tyler.draw(self.screen)
+            self.draw_text(self.screen, "Tyler", 42, BLACK, "tm", 512, 130)
+            self.draw_text(self.screen, "Spawns 2 extra coins", 42, BLACK, "tm", 512, 360)
         elif self.characternumber == 1:
             self.Adrian.draw(self.screen)
+            self.draw_text(self.screen, "Adrian", 42, BLACK, "tm", 512, 130)
+            self.draw_text(self.screen, "Speed Bonus", 42, BLACK, "tm", 512, 360)
         elif self.characternumber == 2:
             self.Myles.draw(self.screen)
+            self.draw_text(self.screen, "Myles", 42, BLACK, "tm", 512, 130)
+            self.draw_text(self.screen, "Decreased Speed", 42, BLACK, "tm", 512, 360)
         
         pg.display.flip()
 
@@ -247,6 +256,7 @@ class Game:
             self.coincount = 0
             self.gamelevel = 0
             self.enemycount = INITIALENEMYCOUNT
+            self.coinspawncount = INITIALCOINCOUNT
             self.update_map()
             self.new(True)
             self.gamestate = "mainmenu"
