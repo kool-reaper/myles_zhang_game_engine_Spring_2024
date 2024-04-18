@@ -121,7 +121,9 @@ class Player(Sprite):
                 else:
                     self.changelevel = True
             if group == self.game.enemies:
-                self.game.gamestate = "gameover"
+                self.game.hp -= 1
+                self.game.gamestate = "damaged"
+
 
     # Updating the sprite and checking for collisions
     def update(self):

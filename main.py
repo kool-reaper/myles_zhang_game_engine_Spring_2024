@@ -53,7 +53,7 @@ class Game:
         self.coinspawncount = INITIALCOINCOUNT
         self.characternumber = 0
         self.characterlist = ["Tyler", "Adrian", "Myles"]
-        self.startinglives = INITIALSTARTINGLIVES
+        self.hp = INITIALSTARTINGLIVES
         self.load_assets()
 
     # Load game assets
@@ -163,8 +163,11 @@ class Game:
             if self.gamestate == "playing":
                 self.update()
                 self.draw()
-            if self.gamestate == "gameover":
-                self.gameover()
+            if self.gamestate == "damaged":
+                if self.hp == 0:
+                    self.gameover()
+                else:
+                    self.lifelost()
             if self.gamestate == "gamewon":
                 self.gamewon()
 
@@ -194,6 +197,7 @@ class Game:
         self.draw_grid()
         self.game_sprites.draw(self.screen)
         self.draw_text(self.screen, "Coins: " + str(self.coincount), 42, BLACK, "tl", 48, 32)
+        self.draw_text(self.screen, "Lives: " + str(self.hp), 42, BLACK, "tl", 50, 96)
         pg.display.flip()
 
     # input method
@@ -248,7 +252,7 @@ class Game:
     # death function
     def gameover(self):
         self.screen.fill(BLACK)
-        self.draw_text(self.screen, "YOU DIED", 200, WHITE, "tm", 512, 200)
+        self.draw_text(self.screen, "YOU DIED", 180, WHITE, "tm", 512, 200)
         if self.restartbtn.draw(self.screen, 512, 550):
             self.coincount = 0
             self.gamelevel = 0
@@ -259,15 +263,27 @@ class Game:
             self.gamestate = "mainmenu"
         pg.display.flip()
 
+    # life lost function
+    def lifelost(self):
+        self.screen.fill(BLACK)
+        self.draw_text(self.screen, "LIFE LOST", 180, WHITE, "tm", 512, 200)
+        self.draw_text(self.screen, str(self.hp) + " REMAINING", 180, WHITE, "tm", 512, 350)
+        if self.restartbtn.draw(self.screen, 512, 550):
+            self.update_map()
+            self.new(False)
+            self.gamestate = "playing"
+        pg.display.flip()
+
     # Win function
     def gamewon(self):
         self.screen.fill(BLACK)
-        self.draw_text(self.screen, "ROUND COMPLETE", 200, WHITE, "tm", 512, 200)
-        if self.restartbtn.draw(self.screen):
+        self.draw_text(self.screen, "ROUND", 180, WHITE, "tm", 512, 200)
+        self.draw_text(self.screen, "COMPLETE", 180, WHITE, "tm", 512, 350)
+        if self.rightbtn.draw(self.screen, 512, 550):
             self.gamelevel = 0
             self.enemycount += 1
             self.update_map()
-            self.new(True)
+            self.new(False)
             self.gamestate = "mainmenu"
         pg.display.flip()
 
