@@ -230,6 +230,7 @@ class Game:
         self.hp = INITIALSTARTINGLIVES
         self.gamelevel = 0
         self.coincount = 0
+        self.powerscaling = False
 
     # Character effects
     def charactereffects(self):
