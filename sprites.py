@@ -35,17 +35,15 @@ class Player(Sprite):
         self.spritesheet = Spritesheet(path.join(img_folder, PLAYERSPRITESHEET))
         self.current_frame = 0
         self.last_update = 0
-        self.playerspeed = PLAYER_SPEED
-
     def animate(self):
         if self.game.characternumber == 0:
             self.standing_frames = [self.spritesheet.get_image(0, 0, 32, 32),  self.spritesheet.get_image(32, 0, 32, 32)]
         if self.game.characternumber == 1:
             self.standing_frames = [self.spritesheet.get_image(0, 32, 32, 32),  self.spritesheet.get_image(32, 32, 32, 32)]
-            self.playerspeed = 350
         if self.game.characternumber == 2:
+            self.standing_frames = [self.spritesheet.get_image(0, 96, 32, 32),  self.spritesheet.get_image(32, 96, 32, 32)]
+        if self.game.characternumber == 3:
             self.standing_frames = [self.spritesheet.get_image(0, 64, 32, 32),  self.spritesheet.get_image(32, 64, 32, 32)]
-            self.playerspeed = 250
         
         now = pg.time.get_ticks()
         if now - self.last_update > 350:
@@ -61,13 +59,13 @@ class Player(Sprite):
         self.vx, self.vy = 0, 0
         keys = pg.key.get_pressed()
         if keys[pg.K_LEFT] or keys[pg.K_a]:
-            self.vx = -self.playerspeed
+            self.vx = -self.game.playerspeed
         if keys[pg.K_RIGHT] or keys[pg.K_d]:
-            self.vx = self.playerspeed
+            self.vx = self.game.playerspeed
         if keys[pg.K_UP] or keys[pg.K_w]:
-            self.vy = -self.playerspeed
+            self.vy = -self.game.playerspeed
         if keys[pg.K_DOWN] or keys[pg.K_s]:
-            self.vy = self.playerspeed
+            self.vy = self.game.playerspeed
         if keys[pg.K_r]:
             self.game.gamestate = "mainmenu"
             self.game.coincount = 0

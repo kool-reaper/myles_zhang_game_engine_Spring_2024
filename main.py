@@ -52,8 +52,9 @@ class Game:
         self.coincount = 0
         self.coinspawncount = INITIALCOINCOUNT
         self.characternumber = 0
-        self.characterlist = ["Tyler", "Adrian", "Myles"]
+        self.characterlist = ["Tyler", "Adrian", "Rameil", "Myles"]
         self.hp = INITIALSTARTINGLIVES
+        self.playerspeed = PLAYER_SPEED
         self.load_assets()
 
     # Load game assets
@@ -74,6 +75,8 @@ class Game:
         self.Adrian = Image(self, self.Adrian_img, 4)
         self.Myles_img = pg.image.load(path.join(img_folder, 'Myles.png')).convert_alpha()
         self.Myles = Image(self, self.Myles_img, 4)
+        self.Ramiel_img = pg.image.load(path.join(img_folder, 'Rameil.png')).convert_alpha()
+        self.Rameil = Image(self, self.Ramiel_img, 4)
 
 
     # Loading map for the first time
@@ -142,9 +145,6 @@ class Game:
             self.spawnplacelist.remove(enemytile)
             i += 1
         
-
-        if self.characternumber == 0:
-            self.coinspawncount = 6
         o = 1
         while o <= self.coinspawncount:
             cointile = random.choice(self.spawnplacelist)
@@ -219,12 +219,34 @@ class Game:
             text_rect.midtop = (x,y)
         surface.blit(text_surface, text_rect)
 
+    # reset variables upon game restart
+    def resetvar(self):
+        self.playerspeed = PLAYER_SPEED
+        self.coinspawncount = INITIALCOINCOUNT
+        self.enemycount = INITIALENEMYCOUNT
+        self.hp = INITIALSTARTINGLIVES
+        self.gamelevel = 0
+        self.coincount = 0
+
+    # Character effects
+    def charactereffects(self):
+        if self.characternumber == 0:
+            self.coinspawncount = 6
+        if self.characternumber == 1:
+            self.playerspeed = 350
+        if self.characternumber == 2:
+            self.hp = 4
+        if self.characternumber == 3:
+            self.playerspeed = 250
+            self.hp = 2
+
     # displaying start screen
     def main_menu(self):
         self.screen.fill(GRAY)
         if self.playbtn.draw(self.screen, 512, 544):
             self.gamestate = "playing"
             self.map_data = []
+            self.charactereffects()
             self.load_map()
 
         # Character selection
@@ -243,6 +265,10 @@ class Game:
             self.draw_text(self.screen, "Adrian", 42, BLACK, "tm", 512, 130)
             self.draw_text(self.screen, "Speed Bonus", 42, BLACK, "tm", 512, 360)
         elif self.characternumber == 2:
+            self.Rameil.draw(self.screen, 512, 200)
+            self.draw_text(self.screen, "Rameil", 42, BLACK, "tm", 512, 130)
+            self.draw_text(self.screen, "Extra life", 42, BLACK, "tm", 512, 360)
+        elif self.characternumber == 3:
             self.Myles.draw(self.screen, 512, 200)
             self.draw_text(self.screen, "Myles", 42, BLACK, "tm", 512, 130)
             self.draw_text(self.screen, "Decreased Speed", 42, BLACK, "tm", 512, 360)
@@ -254,10 +280,7 @@ class Game:
         self.screen.fill(BLACK)
         self.draw_text(self.screen, "YOU DIED", 180, WHITE, "tm", 512, 200)
         if self.restartbtn.draw(self.screen, 512, 550):
-            self.coincount = 0
-            self.gamelevel = 0
-            self.enemycount = INITIALENEMYCOUNT
-            self.coinspawncount = INITIALCOINCOUNT
+            self.resetvar()
             self.update_map()
             self.new(True)
             self.gamestate = "mainmenu"
@@ -284,7 +307,7 @@ class Game:
             self.enemycount += 1
             self.update_map()
             self.new(False)
-            self.gamestate = "mainmenu"
+            self.gamestate = "playing"
         pg.display.flip()
 
     # Showing the go screen
