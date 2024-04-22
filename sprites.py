@@ -43,6 +43,8 @@ class Player(Sprite):
         if self.game.characternumber == 2:
             self.standing_frames = [self.spritesheet.get_image(0, 96, 32, 32),  self.spritesheet.get_image(32, 96, 32, 32)]
         if self.game.characternumber == 3:
+            self.standing_frames = [self.spritesheet.get_image(0, 128, 32, 32),  self.spritesheet.get_image(32, 128, 32, 32)]
+        if self.game.characternumber == 4:
             self.standing_frames = [self.spritesheet.get_image(0, 64, 32, 32),  self.spritesheet.get_image(32, 64, 32, 32)]
         
         now = pg.time.get_ticks()
@@ -114,8 +116,12 @@ class Player(Sprite):
             if group == self.game.coins:
                 self.game.coincount += 1
             if group == self.game.doors:
+                if self.game.powerscaling == True:
+                    self.game.playerspeed += 10
                 if self.game.gamelevel == MAXMAP:
                     self.game.gamestate = "gamewon"
+                    if self.game.powerscaling == True:
+                        self.game.coinspawncount += 1
                 else:
                     self.changelevel = True
             if group == self.game.enemies:

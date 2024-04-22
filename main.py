@@ -52,9 +52,10 @@ class Game:
         self.coincount = 0
         self.coinspawncount = INITIALCOINCOUNT
         self.characternumber = 0
-        self.characterlist = ["Tyler", "Adrian", "Rameil", "Myles"]
+        self.characterlist = ["Tyler", "Adrian", "Rameil", "Robbie", "Myles"]
         self.hp = INITIALSTARTINGLIVES
         self.playerspeed = PLAYER_SPEED
+        self.powerscaling = False
         self.load_assets()
 
     # Load game assets
@@ -77,6 +78,8 @@ class Game:
         self.Myles = Image(self, self.Myles_img, 4)
         self.Ramiel_img = pg.image.load(path.join(img_folder, 'Rameil.png')).convert_alpha()
         self.Rameil = Image(self, self.Ramiel_img, 4)
+        self.Robbie_img = pg.image.load(path.join(img_folder, 'Robbie.png')).convert_alpha()
+        self.Robbie = Image(self, self.Robbie_img, 4)
 
 
     # Loading map for the first time
@@ -237,6 +240,8 @@ class Game:
         if self.characternumber == 2:
             self.hp = 4
         if self.characternumber == 3:
+            self.powerscaling = True
+        if self.characternumber == 4:
             self.playerspeed = 250
             self.hp = 2
 
@@ -263,15 +268,19 @@ class Game:
         elif self.characternumber == 1:
             self.Adrian.draw(self.screen, 512, 200)
             self.draw_text(self.screen, "Adrian", 42, BLACK, "tm", 512, 130)
-            self.draw_text(self.screen, "Speed Bonus", 42, BLACK, "tm", 512, 360)
+            self.draw_text(self.screen, "Speed bonus", 42, BLACK, "tm", 512, 360)
         elif self.characternumber == 2:
             self.Rameil.draw(self.screen, 512, 200)
             self.draw_text(self.screen, "Rameil", 42, BLACK, "tm", 512, 130)
             self.draw_text(self.screen, "Extra life", 42, BLACK, "tm", 512, 360)
         elif self.characternumber == 3:
+            self.Robbie.draw(self.screen, 512, 200)
+            self.draw_text(self.screen, "Robbie", 42, BLACK, "tm", 512, 130)
+            self.draw_text(self.screen, "Power scaling", 42, BLACK, "tm", 512, 360)
+        elif self.characternumber == 4:
             self.Myles.draw(self.screen, 512, 200)
             self.draw_text(self.screen, "Myles", 42, BLACK, "tm", 512, 130)
-            self.draw_text(self.screen, "Decreased Speed", 42, BLACK, "tm", 512, 360)
+            self.draw_text(self.screen, "Challenge character", 42, BLACK, "tm", 512, 360)
         
         pg.display.flip()
 
