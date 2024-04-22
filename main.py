@@ -289,6 +289,7 @@ class Game:
     def gameover(self):
         self.screen.fill(BLACK)
         self.draw_text(self.screen, "YOU DIED", 180, WHITE, "tm", 512, 200)
+        self.draw_text(self.screen, "Final coin count: " + str(self.coincount), 90, WHITE, "tm", 512, 400)
         if self.restartbtn.draw(self.screen, 512, 550):
             self.resetvar()
             self.update_map()
@@ -316,7 +317,7 @@ class Game:
             self.gamelevel = 0
             self.enemycount += 1
             self.update_map()
-            self.new(False)
+            self.new(True)
             self.gamestate = "playing"
         pg.display.flip()
 
