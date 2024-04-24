@@ -117,7 +117,8 @@ class Player(Sprite):
                 self.game.coincount += 1
             if group == self.game.doors:
                 if self.game.powerscaling == True:
-                    self.game.playerspeed += 10
+                    if self.game.playerspeed < 300:
+                        self.game.playerspeed += 10
                 if self.game.gamelevel == MAXMAP:
                     self.game.gamestate = "gamewon"
                     if self.game.powerscaling == True:
@@ -259,7 +260,6 @@ class Button():
         mousepos = pg.mouse.get_pos()
 
         self.rect.midtop = (x,y)
-
 
         # Checking mouse and button status
         if self.rect.collidepoint(mousepos):

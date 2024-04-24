@@ -46,7 +46,7 @@ class Game:
         self.clock = pg.time.Clock()
         pg.key.set_repeat(500, 100)
         self.running = True
-        self.gamestate = "mainmenu"
+        self.gamestate = "leaderboard"
         # Player statistics
         self.gamelevel = 0
         self.coincount = 0
@@ -80,6 +80,10 @@ class Game:
         self.Rameil = Image(self, self.Ramiel_img, 4)
         self.Robbie_img = pg.image.load(path.join(img_folder, 'Robbie.png')).convert_alpha()
         self.Robbie = Image(self, self.Robbie_img, 4)
+        self.LBbox_img = pg.image.load(path.join(img_folder, 'Leaderboardbox.png')).convert_alpha()
+        self.LBbox = Image(self, self.LBbox_img, 1.5)
+        self.LBbutton_img = pg.image.load(path.join(img_folder, 'Leaderboardbutton.png')).convert_alpha()
+        self.LBbutton = Button(self, self.LBbutton_img, 1)
 
 
     # Loading map for the first time
@@ -173,6 +177,8 @@ class Game:
                     self.lifelost()
             if self.gamestate == "gamewon":
                 self.gamewon()
+            if self.gamestate == "leaderboard":
+                self.leaderboard()
 
         while self.running:
             self.events()
@@ -283,6 +289,28 @@ class Game:
             self.draw_text(self.screen, "Myles", 42, BLACK, "tm", 512, 130)
             self.draw_text(self.screen, "Challenge character", 42, BLACK, "tm", 512, 360)
         
+        if self.LBbutton.draw(self.screen, 512, 644):
+            self.gamestate = "leaderboard"
+
+        pg.display.flip()
+
+    def leaderboard(self):
+        self.screen.fill(GRAY)
+
+        self.LBbox.draw(self.screen, 356, 50)
+        self.LBbox.draw(self.screen, 668, 50)
+        self.LBbox.draw(self.screen, 356, 185)
+        self.LBbox.draw(self.screen, 668, 185)
+        self.LBbox.draw(self.screen, 356, 320)
+        self.LBbox.draw(self.screen, 668, 320)
+        self.LBbox.draw(self.screen, 356, 455)
+        self.LBbox.draw(self.screen, 668, 455)
+        self.LBbox.draw(self.screen, 356, 590)
+        self.LBbox.draw(self.screen, 668, 590)
+
+        if self.leftbtn.draw(self.screen, 150, 50):
+            self.gamestate = "mainmenu"
+
         pg.display.flip()
 
     # death function
