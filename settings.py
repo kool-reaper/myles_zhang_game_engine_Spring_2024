@@ -5,11 +5,10 @@ from os import path
 # display settings
 WIDTH = 1024
 HEIGHT = 768
-# 32x24
 TILESIZE = 32
 TITLE = "Ae"
 
-# color settings
+# Colors
 GREEN = (0, 255, 0)
 YELLOW = (255, 255, 0)
 LIGHTGRAY = (150, 150, 150)
@@ -21,7 +20,7 @@ DARKGRAY = (25, 25, 25)
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 
-# game settings
+# Game settings
 FPS = 144
 PLAYER_SPEED = 300
 INITIALENEMYCOUNT = 2
@@ -30,5 +29,7 @@ MAXMAP = 4
 PLAYERSPRITESHEET = "spritesheet.png"
 INITIALSTARTINGLIVES = 3
 
+# Folder initialization
 game_folder = path.dirname(__file__)
 img_folder = path.join(game_folder, 'images')
+map_folder = path.join(game_folder, 'maps')
