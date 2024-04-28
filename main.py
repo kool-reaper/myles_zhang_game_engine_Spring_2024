@@ -48,7 +48,7 @@ class Game:
         self.clock = pg.time.Clock()
         pg.key.set_repeat(500, 100)
         self.running = True
-        self.gamestate = "LBentry"
+        self.gamestate = "mainmenu"
         # Player statistics
         self.gamelevel = 0
         self.coincount = 0
@@ -66,27 +66,27 @@ class Game:
         img_folder = path.join(game_folder, 'images')
         self.player_img = pg.image.load(path.join(img_folder, 'player.png')).convert_alpha()
         self.playbtn_img = pg.image.load(path.join(img_folder, 'play.png')).convert_alpha()
-        self.playbtn = Button(self, self.playbtn_img, 1)
+        self.playbtn = Button(self, self.playbtn_img)
         self.restart_img = pg.image.load(path.join(img_folder, 'Restart.png')).convert_alpha()
-        self.restartbtn = Button(self, self.restart_img, 1)
+        self.restartbtn = Button(self, self.restart_img)
         self.left_img = pg.image.load(path.join(img_folder, 'Leftbutton.png')).convert_alpha()
-        self.leftbtn = Button(self, self.left_img, 1)
+        self.leftbtn = Button(self, self.left_img)
         self.right_img = pg.image.load(path.join(img_folder, 'Rightbutton.png')).convert_alpha()
-        self.rightbtn = Button(self, self.right_img, 1)
+        self.rightbtn = Button(self, self.right_img)
         self.Tyler_img = pg.image.load(path.join(img_folder, 'Tyler.png')).convert_alpha()
-        self.Tyler = Image(self, self.Tyler_img, 4)
+        self.Tyler = Image(self, self.Tyler_img)
         self.Adrian_img = pg.image.load(path.join(img_folder, 'Adrian.png')).convert_alpha()
-        self.Adrian = Image(self, self.Adrian_img, 4)
+        self.Adrian = Image(self, self.Adrian_img)
         self.Myles_img = pg.image.load(path.join(img_folder, 'Myles.png')).convert_alpha()
-        self.Myles = Image(self, self.Myles_img, 4)
+        self.Myles = Image(self, self.Myles_img)
         self.Ramiel_img = pg.image.load(path.join(img_folder, 'Rameil.png')).convert_alpha()
-        self.Rameil = Image(self, self.Ramiel_img, 4)
+        self.Rameil = Image(self, self.Ramiel_img)
         self.Robbie_img = pg.image.load(path.join(img_folder, 'Robbie.png')).convert_alpha()
-        self.Robbie = Image(self, self.Robbie_img, 4)
+        self.Robbie = Image(self, self.Robbie_img)
         self.LBbox_img = pg.image.load(path.join(img_folder, 'Leaderboardbox.png')).convert_alpha()
-        self.LBbox = Image(self, self.LBbox_img, 1.5)
+        self.LBbox = Image(self, self.LBbox_img)
         self.LBbutton_img = pg.image.load(path.join(img_folder, 'Leaderboardbutton.png')).convert_alpha()
-        self.LBbutton = Button(self, self.LBbutton_img, 1)
+        self.LBbutton = Button(self, self.LBbutton_img)
 
 
     # Loading map for the first time
@@ -266,41 +266,41 @@ class Game:
     # displaying start screen
     def main_menu(self):
         self.screen.fill(GRAY)
-        if self.playbtn.draw(self.screen, 512, 544):
+        if self.playbtn.draw(self.screen, 512, 544, 1):
             self.gamestate = "playing"
             self.map_data = []
             self.charactereffects()
             self.load_map()
 
         # Character selection
-        if self.leftbtn.draw(self.screen, 312, 224):
+        if self.leftbtn.draw(self.screen, 312, 224, 1):
             self.characternumber -= 1
-        if self.rightbtn.draw(self.screen, 712, 224):
+        if self.rightbtn.draw(self.screen, 712, 224, 1):
             self.characternumber += 1
         self.characternumber = self.characternumber % len(self.characterlist)
 
         if self.characternumber == 0:
-            self.Tyler.draw(self.screen, 512, 200)
+            self.Tyler.draw(self.screen, 512, 200, 4)
             self.draw_text(self.screen, "Tyler", 42, BLACK, "tm", 512, 130)
             self.draw_text(self.screen, "Spawns 2 extra coins", 42, BLACK, "tm", 512, 360)
         elif self.characternumber == 1:
-            self.Adrian.draw(self.screen, 512, 200)
+            self.Adrian.draw(self.screen, 512, 200, 4)
             self.draw_text(self.screen, "Adrian", 42, BLACK, "tm", 512, 130)
             self.draw_text(self.screen, "Speed bonus", 42, BLACK, "tm", 512, 360)
         elif self.characternumber == 2:
-            self.Rameil.draw(self.screen, 512, 200)
+            self.Rameil.draw(self.screen, 512, 200, 4)
             self.draw_text(self.screen, "Rameil", 42, BLACK, "tm", 512, 130)
             self.draw_text(self.screen, "Extra life", 42, BLACK, "tm", 512, 360)
         elif self.characternumber == 3:
-            self.Robbie.draw(self.screen, 512, 200)
+            self.Robbie.draw(self.screen, 512, 200, 4)
             self.draw_text(self.screen, "Robbie", 42, BLACK, "tm", 512, 130)
             self.draw_text(self.screen, "Power scaling", 42, BLACK, "tm", 512, 360)
         elif self.characternumber == 4:
-            self.Myles.draw(self.screen, 512, 200)
+            self.Myles.draw(self.screen, 512, 200, 4)
             self.draw_text(self.screen, "Myles", 42, BLACK, "tm", 512, 130)
             self.draw_text(self.screen, "Challenge character", 42, BLACK, "tm", 512, 360)
         
-        if self.LBbutton.draw(self.screen, 512, 644):
+        if self.LBbutton.draw(self.screen, 512, 644, 1):
             self.gamestate = "leaderboard"
 
         pg.display.flip()
@@ -309,20 +309,47 @@ class Game:
     def leaderboard(self):
         self.screen.fill(GRAY)
 
-        self.LBbox.draw(self.screen, 356, 50)
-        self.LBbox.draw(self.screen, 668, 50)
-        self.LBbox.draw(self.screen, 356, 185)
-        self.LBbox.draw(self.screen, 668, 185)
-        self.LBbox.draw(self.screen, 356, 320)
-        self.LBbox.draw(self.screen, 668, 320)
-        self.LBbox.draw(self.screen, 356, 455)
-        self.LBbox.draw(self.screen, 668, 455)
-        self.LBbox.draw(self.screen, 356, 590)
-        self.LBbox.draw(self.screen, 668, 590)
+        self.LBbox.draw(self.screen, 356, 50, 1.5)
+        self.LBbox.draw(self.screen, 668, 50, 1.5)
+        self.LBbox.draw(self.screen, 356, 185, 1.5)
+        self.LBbox.draw(self.screen, 668, 185, 1.5)
+        self.LBbox.draw(self.screen, 356, 320, 1.5)
+        self.LBbox.draw(self.screen, 668, 320, 1.5)
+        self.LBbox.draw(self.screen, 356, 455, 1.5)
+        self.LBbox.draw(self.screen, 668, 455, 1.5)
+        self.LBbox.draw(self.screen, 356, 590, 1.5)
+        self.LBbox.draw(self.screen, 668, 590, 1.5)
 
+        with open("leaderboard.json", 'r') as file:
+                data = json.load(file)
         
+        for entry in data:
+            placement = data.index(entry)
 
-        if self.leftbtn.draw(self.screen, 150, 50):
+            if placement % 2 == 0:
+                x = 356
+            else:
+                x = 668
+
+            y = 50 + (floor((placement) / 2) * 135)
+
+            self.draw_text(self.screen, entry["username"], 32, WHITE, "tl", x - 100, y + 10)
+            self.draw_text(self.screen, str(entry["score"]), 32, WHITE, "tl", x - 100, y + 52)
+
+            characternumber = entry["character"]
+            if characternumber == 0:
+                self.Tyler.draw(self.screen, x + 80, y + 60, 1)
+            elif characternumber == 1:
+                self.Adrian.draw(self.screen, x + 80, y + 60, 1)
+            elif characternumber == 2:
+                self.Rameil.draw(self.screen, x + 80, y + 60, 1)
+            elif characternumber == 3:
+                self.Robbie.draw(self.screen, x + 80, y + 60, 1)
+            elif characternumber == 4:
+                self.Myles.draw(self.screen, x + 80, y + 60, 1)
+                
+
+        if self.leftbtn.draw(self.screen, 150, 50, 1):
             self.gamestate = "mainmenu"
 
         pg.display.flip()
@@ -335,7 +362,7 @@ class Game:
        
         self.draw_text(self.screen, self.username, 90, WHITE, "tm", 512, 350)
         
-        if self.restartbtn.draw(self.screen, 512, 550):
+        if self.restartbtn.draw(self.screen, 512, 550, 1):
 
             LBdata = {
                 "username": self.username,
@@ -368,7 +395,7 @@ class Game:
         self.draw_text(self.screen, "YOU DIED", 180, WHITE, "tm", 512, 200)
         self.draw_text(self.screen, "Final coin count: " + str(self.coincount), 90, WHITE, "tm", 512, 400)
         scorelist = []
-        if self.rightbtn.draw(self.screen, 512, 550):
+        if self.rightbtn.draw(self.screen, 512, 550, 1):
             self.resetvar()
             self.update_map()
             self.new(True)
@@ -397,7 +424,7 @@ class Game:
         self.screen.fill(BLACK)
         self.draw_text(self.screen, "LIFE LOST", 180, WHITE, "tm", 512, 200)
         self.draw_text(self.screen, str(self.hp) + " REMAINING", 180, WHITE, "tm", 512, 350)
-        if self.restartbtn.draw(self.screen, 512, 550):
+        if self.restartbtn.draw(self.screen, 512, 550, 1):
             self.update_map()
             self.new(False)
             self.gamestate = "playing"
@@ -408,7 +435,7 @@ class Game:
         self.screen.fill(BLACK)
         self.draw_text(self.screen, "ROUND", 180, WHITE, "tm", 512, 200)
         self.draw_text(self.screen, "COMPLETE", 180, WHITE, "tm", 512, 350)
-        if self.rightbtn.draw(self.screen, 512, 550):
+        if self.rightbtn.draw(self.screen, 512, 550, 1):
             self.gamelevel = 0
             self.enemycount += 1
             self.update_map()

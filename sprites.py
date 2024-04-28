@@ -244,17 +244,20 @@ class Door(Sprite):
 # This way, you cannot activate multiple buttons with one click
 class Button():
     # Initialize Class
-    def __init__(self, game, img, scale):
-        height = img.get_height()
-        width = img.get_width()
+    def __init__(self, game, img):
+        self.height = img.get_height()
+        self.width = img.get_width()
+        self.img = img
         self.game = game
-        self.image = pg.transform.scale(img, (int(width * scale), int(height * scale)))
-        self.rect = self.image.get_rect()
         self.clicked = False
 
     # Drawing the button
-    def draw(self, surface, x, y):
+    def draw(self, surface, x, y, scale):
         action = False
+
+        # Scaling image, defining image boundaries
+        self.image = pg.transform.scale(self.img, (int(self.width * scale), int(self.height * scale)))
+        self.rect = self.image.get_rect()
 
         # Finding mouse location
         mousepos = pg.mouse.get_pos()
@@ -284,14 +287,15 @@ class Button():
 # Image Class
 class Image():
     # Initialize Class
-    def __init__(self, game, img, scale):
-        height = img.get_height()
-        width = img.get_width()
+    def __init__(self, game, img):
+        self.height = img.get_height()
+        self.width = img.get_width()
         self.game = game
-        self.image = pg.transform.scale(img, (int(width * scale), int(height * scale)))
-        self.rect = self.image.get_rect()
+        self.img = img
 
     # Displaying the Image
-    def draw(self, surface, x, y):
+    def draw(self, surface, x, y, scale):
+        self.image = pg.transform.scale(self.img, (int(self.width * scale), int(self.height * scale)))
+        self.rect = self.image.get_rect()
         self.rect.midtop = (x,y)
         surface.blit(self.image, (self.rect.x, self.rect.y))
