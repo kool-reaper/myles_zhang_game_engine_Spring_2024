@@ -236,7 +236,9 @@ class Game:
                     if event.key == pg.K_BACKSPACE:
                         self.username = self.username[:-1]
                     else:
-                        self.username += event.unicode
+                        # Restrain too long usernames
+                        if len(self.username) < 10:
+                            self.username += event.unicode
 
     # Draw text
     def draw_text(self, surface, text, size, color, tltm, x, y):
