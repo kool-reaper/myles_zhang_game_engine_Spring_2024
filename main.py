@@ -8,7 +8,9 @@ from sprites import *
 import sys
 import random
 from os import path
+import os
 from time import sleep
+import json
 
 # added this math function to round down the clock
 from math import floor
@@ -46,16 +48,17 @@ class Game:
         self.clock = pg.time.Clock()
         pg.key.set_repeat(500, 100)
         self.running = True
-        self.gamestate = "leaderboard"
+        self.gamestate = "LBentry"
         # Player statistics
         self.gamelevel = 0
-        self.coincount = 0
+        self.coincount = 2
         self.coinspawncount = INITIALCOINCOUNT
         self.characternumber = 0
         self.characterlist = ["Tyler", "Adrian", "Rameil", "Robbie", "Myles"]
         self.hp = INITIALSTARTINGLIVES
         self.playerspeed = PLAYER_SPEED
         self.powerscaling = False
+        self.username = ''
         self.load_assets()
 
     # Load game assets
@@ -179,6 +182,8 @@ class Game:
                 self.gamewon()
             if self.gamestate == "leaderboard":
                 self.leaderboard()
+            if self.gamestate == "LBentry":
+                self.LBentry()
 
         while self.running:
             self.events()
@@ -215,6 +220,12 @@ class Game:
             # quit method
             if event.type == pg.QUIT:
                 self.quit()
+            elif event.type == pg.KEYDOWN:
+                if self.gamestate == "LBentry":
+                    if event.key == pg.K_BACKSPACE:
+                        self.username = self.username[:-1]
+                    else:
+                        self.username += event.unicode
 
     # Drawing text
     def draw_text(self, surface, text, size, color, tltm, x, y):
@@ -294,6 +305,7 @@ class Game:
 
         pg.display.flip()
 
+    # display leaderboard function
     def leaderboard(self):
         self.screen.fill(GRAY)
 
@@ -313,16 +325,67 @@ class Game:
 
         pg.display.flip()
 
+    # function to input for leaderboard
+    def LBentry(self):
+        self.screen.fill(BLACK)
+        self.draw_text(self.screen, "TOP 10 SCORE!", 150, WHITE, "tm", 512, 100)
+        self.draw_text(self.screen, "Enter name:", 90, WHITE, "tm", 512, 250)
+       
+        self.draw_text(self.screen, self.username, 90, WHITE, "tm", 512, 350)
+        
+        if self.restartbtn.draw(self.screen, 512, 550):
+
+            LBdata = {
+                "username": self.username,
+                "score": self.coincount,
+                "character": self.characternumber
+                }
+            
+            if os.path.exists("leaderboard.json") and os.path.getsize("leaderboard.json") > 0:
+                with open("leaderboard.json", 'r') as file:
+                    data = json.load(file)
+            else: 
+                data = []
+
+            data.append(LBdata)
+
+            data.sort(key = lambda x: x['score'], reverse=True)
+            data.pop()
+
+            with open('leaderboard.json', "w") as LBfile:
+                json.dump(data, LBfile, indent = 4)
+            self.gamestate = "mainmenu"
+
+        pg.display.flip()
+
     # death function
     def gameover(self):
         self.screen.fill(BLACK)
         self.draw_text(self.screen, "YOU DIED", 180, WHITE, "tm", 512, 200)
         self.draw_text(self.screen, "Final coin count: " + str(self.coincount), 90, WHITE, "tm", 512, 400)
-        if self.restartbtn.draw(self.screen, 512, 550):
+        scorelist = []
+        if self.rightbtn.draw(self.screen, 512, 550):
             self.resetvar()
             self.update_map()
             self.new(True)
-            self.gamestate = "mainmenu"
+
+            with open("leaderboard.json", "r") as file:
+                data = json.load(file)
+
+            for entry in data:
+                score = entry["score"]
+                scorelist.append(int(score))
+                scorelist.sort(reverse = True)
+
+            scorelist.append(self.coincount)
+            scorelist.sort(reverse = True)
+
+            if len(scorelist) <= 10:
+                self.gamestate = "LBentry"
+            elif scorelist[-1] == self.coincount:
+                self.gamestate = "mainmenu"
+            else:
+                self.gamestate = "LBentry"
         pg.display.flip()
 
     # life lost function
@@ -350,8 +413,6 @@ class Game:
         pg.display.flip()
 
     # Showing the go screen
-
-                
 
 # Making and running the window
 g = Game()
