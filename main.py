@@ -385,6 +385,8 @@ class Game:
 
             with open('leaderboard.json', "w") as LBfile:
                 json.dump(data, LBfile, indent = 4)
+
+            self.resetvar()
             self.gamestate = "mainmenu"
 
         pg.display.flip()
@@ -396,12 +398,14 @@ class Game:
         self.draw_text(self.screen, "Final coin count: " + str(self.coincount), 90, WHITE, "tm", 512, 400)
         scorelist = []
         if self.rightbtn.draw(self.screen, 512, 550, 1):
-            self.resetvar()
             self.update_map()
             self.new(True)
 
-            with open("leaderboard.json", "r") as file:
-                data = json.load(file)
+            if os.path.exists("leaderboard.json") and os.path.getsize("leaderboard.json") > 0:
+                with open("leaderboard.json", 'r') as file:
+                    data = json.load(file)
+            else: 
+                data = []
 
             for entry in data:
                 score = entry["score"]
@@ -414,9 +418,11 @@ class Game:
             if len(scorelist) <= 10:
                 self.gamestate = "LBentry"
             elif scorelist[-1] == self.coincount:
+                self.resetvar()
                 self.gamestate = "mainmenu"
             else:
                 self.gamestate = "LBentry"
+
         pg.display.flip()
 
     # life lost function
