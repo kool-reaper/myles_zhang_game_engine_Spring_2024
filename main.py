@@ -51,7 +51,7 @@ class Game:
         self.gamestate = "LBentry"
         # Player statistics
         self.gamelevel = 0
-        self.coincount = 2
+        self.coincount = 0
         self.coinspawncount = INITIALCOINCOUNT
         self.characternumber = 0
         self.characterlist = ["Tyler", "Adrian", "Rameil", "Robbie", "Myles"]
@@ -320,6 +320,8 @@ class Game:
         self.LBbox.draw(self.screen, 356, 590)
         self.LBbox.draw(self.screen, 668, 590)
 
+        
+
         if self.leftbtn.draw(self.screen, 150, 50):
             self.gamestate = "mainmenu"
 
@@ -350,7 +352,9 @@ class Game:
             data.append(LBdata)
 
             data.sort(key = lambda x: x['score'], reverse=True)
-            data.pop()
+
+            if len(data) > 10:
+                data.pop()
 
             with open('leaderboard.json', "w") as LBfile:
                 json.dump(data, LBfile, indent = 4)
