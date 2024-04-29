@@ -99,10 +99,10 @@ class Game:
     # Load map for the first time
     def load_map(self):
         # Open and read map
-        with open(path.join(map_folder, 'map0.txt'), 'rt') as f:
+        with open(path.join(map_folder, 'map' + str(self.gamelevel) + '.txt'), 'rt') as f:
             for line in f:
                 self.map_data.append(line)
-
+                
         # Create map
         self.new()
 

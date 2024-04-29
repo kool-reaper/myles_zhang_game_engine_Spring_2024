@@ -92,7 +92,7 @@ class Player(Sprite):
             self.game.gamelevel = 0
             self.game.enemycount = INITIALENEMYCOUNT
             self.game.coinspawncount = INITIALCOINCOUNT
-            self.game.new(True)
+            self.game.new()
 
         # Admin testing keys
         # Increase enemy count
@@ -103,7 +103,7 @@ class Player(Sprite):
             self.game.gamelevel = 0
             self.game.enemycount += 1
             self.game.update_map()
-            self.game.new(True)
+            self.game.new()
 
     # Collision with walls
     def collidewithwalls(self, dir):
