@@ -63,6 +63,7 @@ class Game:
         self.playerspeed = PLAYER_SPEED
         self.powerscaling = False
         self.username = ''
+        self.coinbar = 0
         
         # Load game assets
         self.load_assets()
@@ -274,7 +275,7 @@ class Game:
         if self.characternumber == 1:
             self.playerspeed = 350
         if self.characternumber == 2:
-            self.hp = 4
+            self.hp = 5
         if self.characternumber == 3:
             self.powerscaling = True
         if self.characternumber == 4:
@@ -311,7 +312,7 @@ class Game:
         elif self.characternumber == 2:
             self.Rameil.draw(self.screen, 512, 200, 4)
             self.draw_text(self.screen, "Rameil", 42, BLACK, "tm", 512, 130)
-            self.draw_text(self.screen, "Extra life", 42, BLACK, "tm", 512, 360)
+            self.draw_text(self.screen, "Extra lives", 42, BLACK, "tm", 512, 360)
         elif self.characternumber == 3:
             self.Robbie.draw(self.screen, 512, 200, 4)
             self.draw_text(self.screen, "Robbie", 42, BLACK, "tm", 512, 130)

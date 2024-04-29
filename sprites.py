@@ -144,14 +144,16 @@ class Player(Sprite):
                 # Change variables for powerscaling
                 if self.game.powerscaling == True:
                     if self.game.playerspeed < 300:
-                        self.game.playerspeed += 10
-                
+                        self.game.playerspeed += 5
                 # Commence round if there are no more maps
                 if self.game.gamelevel == MAXMAP:
+                    self.game.gamelevel = "0"
                     self.game.gamestate = "gamewon"
                     # Change variables for powerscaling
                     if self.game.powerscaling == True:
-                        self.game.coinspawncount += 1
+                        self.game.coinbar += 1
+                        if self.game.coinbar % 2 == 0:
+                            self.game.coinspawncount += 1
                 else:
                     # Go to next level
                     self.changelevel = True
