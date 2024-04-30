@@ -57,15 +57,18 @@ class Player(Sprite):
         if self.game.characternumber == 4:
             self.standing_frames = [self.spritesheet.get_image(0, 64, 32, 32),  self.spritesheet.get_image(32, 64, 32, 32)]
         
-        # Update player sprite
-        now = pg.time.get_ticks()
-        if now - self.last_update > 350:
-            self.last_update = now
-            self.current_frame = (self.current_frame + 1) % len(self.standing_frames)
-            bottom = self.rect.bottom
-            self.image = self.standing_frames[self.current_frame]
-            self.rect = self.image.get_rect()
-            self.rect.bottom = bottom
+        # Stop animation if paused
+        if self.game.paused == False:
+
+            # Update player sprite
+            now = pg.time.get_ticks()
+            if now - self.last_update > 350:
+                self.last_update = now
+                self.current_frame = (self.current_frame + 1) % len(self.standing_frames)
+                bottom = self.rect.bottom
+                self.image = self.standing_frames[self.current_frame]
+                self.rect = self.image.get_rect()
+                self.rect.bottom = bottom
 
     # Checking which keys are pressed
     def getkeys(self):
@@ -85,25 +88,16 @@ class Player(Sprite):
             self.vx *= 0.7071
             self.vy *= 0.7071
 
-        # Game reset hotkey
-        if keys[pg.K_r]:
-            self.game.gamestate = "mainmenu"
-            self.game.coincount = 0
-            self.game.gamelevel = 0
-            self.game.enemycount = INITIALENEMYCOUNT
-            self.game.coinspawncount = INITIALCOINCOUNT
-            self.game.new()
-
         # Admin testing keys
         # Increase enemy count
-        if keys[pg.K_p]:
-            self.p_pressed = True
-        if keys[pg.K_p] == False and self.p_pressed == True:
-            self.p_pressed = False
-            self.game.gamelevel = 0
-            self.game.enemycount += 1
-            self.game.update_map()
-            self.game.new()
+        # if keys[pg.K_p]:
+        #     self.p_pressed = True
+        # if keys[pg.K_p] == False and self.p_pressed == True:
+        #     self.p_pressed = False
+        #     self.game.gamelevel = 0
+        #     self.game.enemycount += 1
+        #     self.game.update_map()
+        #     self.game.new()
 
     # Collision with walls
     def collidewithwalls(self, dir):
@@ -173,8 +167,9 @@ class Player(Sprite):
         self.getkeys()
 
         # Control movement
-        self.x += self.vx * self.game.dt
-        self.y += self.vy * self.game.dt
+        if self.game.paused == False:
+            self.x += self.vx * self.game.dt
+            self.y += self.vy * self.game.dt
 
         # Check collisions
         self.rect.x = self.x
@@ -242,8 +237,9 @@ class Enemy (Sprite):
     # Updating the sprite and checking for collisions
     def update(self):
         # Control movement
-        self.x += self.vx * self.game.dt
-        self.y += self.vy * self.game.dt
+        if self.game.paused == False:
+            self.x += self.vx * self.game.dt
+            self.y += self.vy * self.game.dt
 
         # Check collisions
         self.rect.x = self.x

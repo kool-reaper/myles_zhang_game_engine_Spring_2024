@@ -51,6 +51,7 @@ class Game:
         # Game states
         self.running = True
         self.gamestate = "mainmenu"
+        self.paused = False
 
         # Player statistics
         self.gamelevel = 0
@@ -177,6 +178,7 @@ class Game:
                 self.main_menu()
             if self.gamestate == "playing":
                 self.update()
+                
                 self.draw()
             if self.gamestate == "damaged":
                 if self.hp == 0:
@@ -218,9 +220,13 @@ class Game:
         self.draw_grid()
         self.game_sprites.draw(self.screen)
 
-        # Draw statistics trackers
-        self.draw_text(self.screen, "Coins: " + str(self.coincount), 42, BLACK, "tl", 48, 32)
-        self.draw_text(self.screen, "Lives: " + str(self.hp), 42, BLACK, "tl", 50, 96)
+        # Draw paused screen
+        if self.paused == True:
+            self.pausedstate()
+        else:
+            # Draw statistics trackers
+            self.draw_text(self.screen, "Coins: " + str(self.coincount), 42, BLACK, "tl", 48, 32)
+            self.draw_text(self.screen, "Lives: " + str(self.hp), 42, BLACK, "tl", 50, 96)
 
         pg.display.flip()
 
@@ -233,13 +239,133 @@ class Game:
             
             # Text entry method
             elif event.type == pg.KEYDOWN:
+
+                # Text entry for entering usernames
                 if self.gamestate == "LBentry":
                     if event.key == pg.K_BACKSPACE:
                         self.username = self.username[:-1]
+                    elif event.key == pg.K_RETURN:
+                        pass
                     else:
                         # Restrain too long usernames
                         if len(self.username) < 10:
                             self.username += event.unicode
+
+                if self.gamestate == "playing":
+                    # Escape to pause
+                    if event.key == pg.K_ESCAPE:
+                        if self.paused == False:
+                            self.paused = True
+                        else:
+                            self.paused = False
+
+                    # r to restart
+                    if event.key == pg.K_r:
+                        self.gamestate = "mainmenu"
+                        self.resetvar()
+
+                # Character selection
+                if self.gamestate == "mainmenu":
+                    if event.key == pg.K_LEFT:
+                        self.characternumber -= 1
+                    if event.key == pg.K_RIGHT:
+                        self.characternumber += 1
+
+                # QOL buttons
+                if event.key == pg.K_SPACE or event.key == pg.K_RETURN:
+                    if self.gamestate == "mainmenu":
+                        self.gamestate = "playing"
+                        self.paused == False
+                        self.map_data = []
+                        self.charactereffects()
+                        self.load_map()        
+                    elif self.gamestate == "damaged":
+                        if self.hp == 0:
+                            self.LBcheck()
+                        else:
+                            self.update_map()
+                            self.new()
+                            self.gamestate = "playing"
+                    elif self.gamestate == "gamewon":
+                        self.gamelevel = 0
+                        self.enemycount += 1
+                        self.update_map()
+                        self.new()
+                        self.gamestate = "playing"
+                    elif self.gamestate == "LBentry":
+                        self.LBupdate()
+                if event.key == pg.K_ESCAPE:
+                    if self.gamestate == "leaderboard":
+                        self.gamestate = "mainmenu"
+
+    # Check if score is high enough for leaderboard
+    def LBcheck(self):
+        self.update_map()
+        self.new()
+
+        # Open leaderboard file
+        if os.path.exists("leaderboard.json") and os.path.getsize("leaderboard.json") > 0:
+            with open("leaderboard.json", 'r') as file:
+                data = json.load(file)
+        else: 
+            data = []
+
+        # Read leaderboard score information
+        scorelist = []
+        for entry in data:
+            score = entry["score"]
+            scorelist.append(int(score))
+
+        # Enter current data
+        scorelist.append(self.coincount)
+
+        # Organize scores from highest to lowest
+        scorelist.sort(reverse = True)
+
+        # Allow new leaderboard entry if there are less than 10 total entries
+        if len(scorelist) <= 10:
+            self.gamestate = "LBentry"
+        # Deny new leaderboard entry if current score is the lowest or equal to the lowest score
+        elif scorelist[-1] == self.coincount:
+            self.resetvar()
+            self.gamestate = "mainmenu"
+        # Allow new leaderboard entry if current score surpasses last place
+        else:
+            self.gamestate = "LBentry"
+
+    # Update leaderboard
+    def LBupdate(self):
+        # Organize data to be saved
+        LBdata = {
+            "username": self.username,
+            "score": self.coincount,
+            "character": self.characternumber
+            }
+        
+        # Open leaderboard file
+        if os.path.exists("leaderboard.json") and os.path.getsize("leaderboard.json") > 0:
+            with open("leaderboard.json", 'r') as file:
+                data = json.load(file)
+        else: 
+            data = []
+
+        # Append current data
+        data.append(LBdata)
+
+        # Sort leaderboard data by greatest to least score
+        data.sort(key = lambda x: x['score'], reverse=True)
+
+        # Remove last entry if there are more than 10 scores
+        if len(data) > 10:
+            data.pop()
+
+        # Replace leaderbaord data
+        with open('leaderboard.json', "w") as LBfile:
+            json.dump(data, LBfile, indent = 4)
+
+        # Reset game
+        self.resetvar()
+        self.gamestate = "mainmenu"
 
     # Draw text
     def draw_text(self, surface, text, size, color, tltm, x, y):
@@ -281,6 +407,14 @@ class Game:
         if self.characternumber == 4:
             self.playerspeed = 250
             self.hp = 2
+
+    # Display paused screen
+    def pausedstate(self):
+        pausedbg = pg.Surface((1024, 768), pg.SRCALPHA)
+        pausedbg.fill((206, 204, 197, 128))
+        self.screen.blit(pausedbg, (0, 0))
+        self.draw_text(self.screen, "PAUSED", 150, BLACK, "tm", 512, 300)
+        self.draw_text(self.screen, "press escape to continue", 30, BLACK, "tm", 512, 470)
 
     # Display main menu screen
     def main_menu(self):
@@ -403,37 +537,7 @@ class Game:
         
         # Draw restart button
         if self.restartbtn.draw(self.screen, 512, 550, 1):
-            # Organize data to be saved
-            LBdata = {
-                "username": self.username,
-                "score": self.coincount,
-                "character": self.characternumber
-                }
-            
-            # Open leaderboard file
-            if os.path.exists("leaderboard.json") and os.path.getsize("leaderboard.json") > 0:
-                with open("leaderboard.json", 'r') as file:
-                    data = json.load(file)
-            else: 
-                data = []
-
-            # Append current data
-            data.append(LBdata)
-
-            # Sort leaderboard data by greatest to least score
-            data.sort(key = lambda x: x['score'], reverse=True)
-
-            # Remove last entry if there are more than 10 scores
-            if len(data) > 10:
-                data.pop()
-
-            # Replace leaderbaord data
-            with open('leaderboard.json', "w") as LBfile:
-                json.dump(data, LBfile, indent = 4)
-
-            # Reset game
-            self.resetvar()
-            self.gamestate = "mainmenu"
+            self.LBupdate()
 
         pg.display.flip()
 
@@ -447,38 +551,7 @@ class Game:
 
         # Draw exit button
         if self.rightbtn.draw(self.screen, 512, 550, 1):
-            self.update_map()
-            self.new()
-
-            # Open leaderboard file
-            if os.path.exists("leaderboard.json") and os.path.getsize("leaderboard.json") > 0:
-                with open("leaderboard.json", 'r') as file:
-                    data = json.load(file)
-            else: 
-                data = []
-
-            # Read leaderboard score information
-            scorelist = []
-            for entry in data:
-                score = entry["score"]
-                scorelist.append(int(score))
-
-            # Enter current data
-            scorelist.append(self.coincount)
-
-            # Organize scores from highest to lowest
-            scorelist.sort(reverse = True)
-
-            # Allow new leaderboard entry if there are less than 10 total entries
-            if len(scorelist) <= 10:
-                self.gamestate = "LBentry"
-            # Deny new leaderboard entry if current score is the lowest or equal to the lowest score
-            elif scorelist[-1] == self.coincount:
-                self.resetvar()
-                self.gamestate = "mainmenu"
-            # Allow new leaderboard entry if current score surpasses last place
-            else:
-                self.gamestate = "LBentry"
+            self.LBcheck()
 
         pg.display.flip()
 
