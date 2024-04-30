@@ -104,7 +104,324 @@ class Game:
         # Open and read map
         self.currmaplist = random.sample(self.maplist, 5)
         random.shuffle(self.currmaplist)
-    
+        print(self.currmaplist)
+        self.currmap = 0
+        with open(path.join(map_folder, 'map' + str(self.currmaplist[0]) + '.txt'), 'rt') as f:
+            for line in f:
+                self.map_data.append(line)
+        # Create map
+        self.new()
+
+    # Updating the map when the level changes
+    def update_map(self):
+        # Open and read map
+        if self.player.changelevel == True:
+            self.player.changelevel = False
+            self.gamelevel += 1
+            self.currmap += 1
+            self.map_data = []
+            with open(path.join(map_folder, 'map' + str(self.currmaplist[self.currmap]) + '.txt'), 'rt') as f:
+                for line in f:
+                    self.map_data.append(line)
+            self.new()
+
+    # Init all variables, setup groups, instantiate classes
+    def new(self):
+        # Reload spawnpoints
+        self.spawnplacelist = []
+
+        # Initialize groups
+        self.game_sprites = pg.sprite.Group()
+        self.mainmenu_sprites = pg.sprite.Group()
+        self.walls = pg.sprite.Group()
+        self.coins = pg.sprite.Group()
+        self.enemies = pg.sprite.Group()
+        self.doors = pg.sprite.Group()
+
+        # Read map
+        for row, tiles in enumerate(self.map_data):
+            for col, tile in enumerate(tiles):
+                if tile == '1':
+                    Wall(self, col, row)
+                if tile == 'P':
+                    self.player = Player(self, col, row)
+                if tile == 'D':
+                    Door(self, col, row)
+                if tile == 'E':
+                    Enemy(self, col, row)
+                if tile == ".":
+                    # Add . tiles to potential spawnpoints
+                    self.spawnplacelist.append((col, row))
+        
+        # Spawn enemies
+        i = 1
+        while i <= self.enemycount:
+            # Find random spawnpoint, remove spawnpoint from list to prevent overlap
+            enemytile = random.choice(self.spawnplacelist)
+            Enemy(self, enemytile[0], enemytile[1])
+            self.spawnplacelist.remove(enemytile)
+            i += 1
+        
+        # Spawn coins
+        o = 1
+        while o <= self.coinspawncount:
+            # Find random spawnpoint, remove spawnpoint from list to prevent overlap
+            cointile = random.choice(self.spawnplacelist)
+            Coin(self, cointile[0], cointile[1])
+            self.spawnplacelist.remove(cointile)
+            o += 1
+
+    # run method
+    def run(self):
+        self.playing = True
+        while self.playing:
+            # Tick the clock
+            self.dt = self.clock.tick(FPS) / 1000
+            self.events()
+
+            # Display screens depending on gamestate
+            if self.gamestate == "mainmenu":
+                self.main_menu()
+            if self.gamestate == "playing":
+                self.update()
+                
+                self.draw()
+            if self.gamestate == "damaged":
+                if self.hp == 0:
+                    self.gameover()
+                else:
+                    self.lifelost()
+            if self.gamestate == "gamewon":
+                self.gamewon()
+            if self.gamestate == "leaderboard":
+                self.leaderboard()
+            if self.gamestate == "LBentry":
+                self.LBentry()
+
+        # Load events
+        while self.running:
+            self.events()
+
+    # Quit function
+    def quit(self):
+        pg.quit()
+        sys.exit()
+
+    # Update display and positions
+    def update(self):
+        self.game_sprites.update()
+        self.update_map()
+
+    # Draw grid
+    def draw_grid(self):
+        for x in range (0, WIDTH, TILESIZE):
+            pg.draw.line(self.screen, LIGHTGRAY, (x,0), (x, HEIGHT))
+        for y in range (0, WIDTH, TILESIZE):
+            pg.draw.line(self.screen, LIGHTGRAY, (0,y), (WIDTH, y))
+
+    # Draw ingame display
+    def draw(self):
+        # Draw ingame assets
+        self.screen.fill(BGCOLOR)
+        self.draw_grid()
+        self.game_sprites.draw(self.screen)
+
+        # Draw paused screen
+        if self.paused == True:
+            self.pausedstate()
+        else:
+            # Draw statistics trackers
+            self.draw_text(self.screen, "Coins: " + str(self.coincount), 42, BLACK, "tl", 48, 32)
+            self.draw_text(self.screen, "Lives: " + str(self.hp), 42, BLACK, "tl", 50, 96)
+
+        pg.display.flip()
+
+    # Input method
+    def events(self):
+        for event in pg.event.get():
+            # Quit method
+            if event.type == pg.QUIT:
+                self.quit()
+            
+            # Text entry method
+            elif event.type == pg.KEYDOWN:
+
+                # Text entry for entering usernames
+                if self.gamestate == "LBentry":
+                    if event.key == pg.K_BACKSPACE:
+                        self.username = self.username[:-1]
+                    elif event.key == pg.K_RETURN:
+                        pass
+                    else:
+                        # Restrain too long usernames
+                        if len(self.username) < 10:
+                            self.username += event.unicode
+
+                if self.gamestate == "playing":
+                    # Escape to pause
+                    if event.key == pg.K_ESCAPE:
+                        if self.paused == False:
+                            self.paused = True
+                        else:
+                            self.paused = False
+
+                    # r to restart
+                    if event.key == pg.K_r:
+                        self.gamestate = "mainmenu"
+                        self.resetvar()
+
+                # Character selection
+                if self.gamestate == "mainmenu":
+                    if event.key == pg.K_LEFT:
+                        self.characternumber -= 1
+                    if event.key == pg.K_RIGHT:
+                        self.characternumber += 1
+
+                # QOL buttons
+                if event.key == pg.K_SPACE or event.key == pg.K_RETURN:
+                    if self.gamestate == "mainmenu":
+                        self.gamestate = "playing"
+                        self.paused == False
+                        self.map_data = []
+                        self.charactereffects()
+                        self.load_map()        
+                    elif self.gamestate == "damaged":
+                        if self.hp == 0:
+                            self.LBcheck()
+                        else:
+                            self.update_map()
+                            self.new()
+                            self.gamestate = "playing"
+                    elif self.gamestate == "gamewon":
+                        self.gamelevel = 0
+                        self.enemycount += 1
+                        self.update_map()
+                        self.new()
+                        self.gamestate = "playing"
+                    elif self.gamestate == "LBentry":
+                        self.LBupdate()
+                if event.key == pg.K_ESCAPE:
+                    if self.gamestate == "leaderboard":
+                        self.gamestate = "mainmenu"
+
+    # Check if score is high enough for leaderboard
+    def LBcheck(self):
+        self.update_map()
+        self.new()
+
+        # Open leaderboard file
+        if os.path.exists("leaderboard.json") and os.path.getsize("leaderboard.json") > 0:
+            with open("leaderboard.json", 'r') as file:
+                data = json.load(file)
+        else: 
+            data = []
+
+        # Read leaderboard score information
+        scorelist = []
+        for entry in data:
+            score = entry["score"]
+            scorelist.append(int(score))
+
+        # Enter current data
+        scorelist.append(self.coincount)
+
+        # Organize scores from highest to lowest
+        scorelist.sort(reverse = True)
+
+        # Allow new leaderboard entry if there are less than 10 total entries
+        if len(scorelist) <= 10:
+            self.gamestate = "LBentry"
+        # Deny new leaderboard entry if current score is the lowest or equal to the lowest score
+        elif scorelist[-1] == self.coincount:
+            self.resetvar()
+            self.gamestate = "mainmenu"
+        # Allow new leaderboard entry if current score surpasses last place
+        else:
+            self.gamestate = "LBentry"
+
+    # Update leaderboard
+    def LBupdate(self):
+        # Organize data to be saved
+        LBdata = {
+            "username": self.username,
+            "score": self.coincount,
+            "character": self.characternumber
+            }
+        
+        # Open leaderboard file
+        if os.path.exists("leaderboard.json") and os.path.getsize("leaderboard.json") > 0:
+            with open("leaderboard.json", 'r') as file:
+                data = json.load(file)
+        else: 
+            data = []
+
+        # Append current data
+        data.append(LBdata)
+
+        # Sort leaderboard data by greatest to least score
+        data.sort(key = lambda x: x['score'], reverse=True)
+
+        # Remove last entry if there are more than 10 scores
+        if len(data) > 10:
+            data.pop()
+
+        # Replace leaderbaord data
+        with open('leaderboard.json', "w") as LBfile:
+            json.dump(data, LBfile, indent = 4)
+
+        # Reset game
+        self.resetvar()
+        self.gamestate = "mainmenu"
+
+    # Draw text
+    def draw_text(self, surface, text, size, color, tltm, x, y):
+        # Initialize text variables
+        font_name = pg.font.match_font('arial')
+        font = pg.font.Font(font_name, size)
+        text_surface = font.render(text, True, color)
+        text_rect = text_surface.get_rect()
+
+        # Figure out whether coordinates are from left or centered
+        if tltm == "tl":
+            text_rect.topleft = (x,y)
+        if tltm == "tm":
+            text_rect.midtop = (x,y)
+        
+        surface.blit(text_surface, text_rect)
+
+    # Reset game/player variables
+    def resetvar(self):
+        self.playerspeed = PLAYER_SPEED
+        self.coinspawncount = INITIALCOINCOUNT
+        self.enemycount = INITIALENEMYCOUNT
+        self.hp = INITIALSTARTINGLIVES
+        self.gamelevel = 0
+        self.coincount = 0
+        self.powerscaling = False
+        self.username = ""
+
+    # Character effects
+    def charactereffects(self):
+        if self.characternumber == 0:
+            self.coinspawncount = 5
+        if self.characternumber == 1:
+            self.playerspeed = 350
+        if self.characternumber == 2:
+            self.hp = 5
+        if self.characternumber == 3:
+            self.powerscaling = True
+        if self.characternumber == 4:
+            self.playerspeed = 250
+            self.hp = 2
+
+    # Display paused screen
+    def pausedstate(self):
+        pausedbg = pg.Surface((1024, 768), pg.SRCALPHA)
+        pausedbg.fill((206, 204, 197, 128))
+        self.screen.blit(pausedbg, (0, 0))
+        self.draw_text(self.screen, "PAUSED", 150, BLACK, "tm", 512, 300)
+        self.draw_text(self.screen, "press escape to continue", 30, BLACK, "tm", 512, 470)
+
     # Display main menu screen
     def main_menu(self):
         self.screen.fill(GRAY)
