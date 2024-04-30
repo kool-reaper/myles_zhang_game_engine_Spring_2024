@@ -37,6 +37,7 @@ class Player(Sprite):
         # Initialize message varialbes
         self.changelevel = 0
         self.p_pressed = False
+        self.twopressed = False
 
         # Initalize player animation variables
         self.spritesheet = Spritesheet(path.join(img_folder, PLAYERSPRITESHEET))
@@ -98,6 +99,13 @@ class Player(Sprite):
         #     self.game.enemycount += 1
         #     self.game.update_map()
         #     self.game.new()
+
+        # Skip levels
+        if keys[pg.K_2]:
+            self.twopressed = True
+        if keys[pg.K_2] == False and self.twopressed == True:
+            self.twopressed = False
+            self.changelevel = True
 
     # Collision with walls
     def collidewithwalls(self, dir):
