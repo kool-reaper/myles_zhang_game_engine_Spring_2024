@@ -102,7 +102,7 @@ class Game:
         with open(path.join(map_folder, 'map' + str(self.gamelevel) + '.txt'), 'rt') as f:
             for line in f:
                 self.map_data.append(line)
-                
+
         # Create map
         self.new()
 
@@ -271,7 +271,7 @@ class Game:
     # Character effects
     def charactereffects(self):
         if self.characternumber == 0:
-            self.coinspawncount = 6
+            self.coinspawncount = 5
         if self.characternumber == 1:
             self.playerspeed = 350
         if self.characternumber == 2:
@@ -304,7 +304,7 @@ class Game:
         if self.characternumber == 0:
             self.Tyler.draw(self.screen, 512, 200, 4)
             self.draw_text(self.screen, "Tyler", 42, BLACK, "tm", 512, 130)
-            self.draw_text(self.screen, "Spawns 2 extra coins", 42, BLACK, "tm", 512, 360)
+            self.draw_text(self.screen, "Extra coins", 42, BLACK, "tm", 512, 360)
         elif self.characternumber == 1:
             self.Adrian.draw(self.screen, 512, 200, 4)
             self.draw_text(self.screen, "Adrian", 42, BLACK, "tm", 512, 130)

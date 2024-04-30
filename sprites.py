@@ -217,9 +217,11 @@ class Enemy (Sprite):
             if hits:
                 # Prevent getting stuck in walls
                 if self.vx > 0:
-                    self.x = hits[0].rect.left - self.rect.width
+                    if self.rect.centerx < hits[0].rect.centerx:
+                        self.x = hits[0].rect.left - self.rect.width
                 if self.vx < 0:
-                    self.x = hits[0].rect.right
+                    if self.rect.centerx > hits[0].rect.centerx:
+                        self.x = hits[0].rect.right
                 self.vx = -self.vx
                 self.rect.x = self.x
 
@@ -229,9 +231,11 @@ class Enemy (Sprite):
             if hits:
                 # Prevent getting stuck in walls
                 if self.vy > 0:
-                    self.y = hits[0].rect.top - self.rect.height
+                    if self.rect.centery < hits[0].rect.centery:
+                        self.y = hits[0].rect.top - self.rect.height
                 if self.vy < 0:
-                    self.y = hits[0].rect.bottom
+                    if self.rect.centery > hits[0].rect.centery:
+                        self.y = hits[0].rect.bottom
                 self.vy = -self.vy
                 self.rect.y = self.y
 
