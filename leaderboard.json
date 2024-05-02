@@ -5,12 +5,37 @@
         "character": 0
     },
     {
+        "username": "nice",
+        "score": 69,
+        "character": 3
+    },
+    {
+        "username": "Adrian",
+        "score": 61,
+        "character": 3
+    },
+    {
         "username": "Rohan",
         "score": 55,
         "character": 1
     },
     {
+        "username": "Sammm",
+        "score": 52,
+        "character": 3
+    },
+    {
         "username": "Adrian",
+        "score": 50,
+        "character": 1
+    },
+    {
+        "username": "Sam",
+        "score": 50,
+        "character": 3
+    },
+    {
+        "username": "Ben",
         "score": 50,
         "character": 1
     },
@@ -20,33 +45,8 @@
         "character": 1
     },
     {
-        "username": "Adrian",
-        "score": 39,
-        "character": 4
-    },
-    {
-        "username": "Ben",
-        "score": 38,
+        "username": "nate",
+        "score": 45,
         "character": 1
-    },
-    {
-        "username": "",
-        "score": 26,
-        "character": 1
-    },
-    {
-        "username": "",
-        "score": 24,
-        "character": 1
-    },
-    {
-        "username": "Ben",
-        "score": 11,
-        "character": 1
-    },
-    {
-        "username": "OneKing",
-        "score": 5,
-        "character": 4
     }
 ]

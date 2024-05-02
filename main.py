@@ -60,7 +60,7 @@ class Game:
         self.coinspawncount = INITIALCOINCOUNT
         self.characternumber = 0
         self.characterlist = ["Tyler", "Adrian", "Rameil", "Robbie", "Myles"]
-        self.maplist = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+        self.maplist = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14"]
         self.hp = INITIALSTARTINGLIVES
         self.enemycount = INITIALENEMYCOUNT
         self.playerspeed = PLAYER_SPEED
@@ -98,7 +98,6 @@ class Game:
         self.LBbutton_img = pg.image.load(path.join(img_folder, 'Leaderboardbutton.png')).convert_alpha()
         self.LBbutton = Button(self, self.LBbutton_img)
 
-
     # Load map for the first time
     def load_map(self):
         # Open and read map
@@ -120,7 +119,7 @@ class Game:
             self.gamelevel += 1
             self.currmap += 1
             self.map_data = []
-            with open(path.join(map_folder, 'map' + str(self.currmaplist[self.currmap]) + '.txt'), 'rt') as f:
+            with open(path.join(map_folder, 'map' + str(self.currmaplist[self.currmap % 5]) + '.txt'), 'rt') as f:
                 for line in f:
                     self.map_data.append(line)
             self.new()
