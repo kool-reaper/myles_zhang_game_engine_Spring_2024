@@ -61,6 +61,7 @@ class Game:
         self.characternumber = 0
         self.characterlist = ["Tyler", "Adrian", "Rameil", "Robbie", "Myles"]
         self.maplist = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14"]
+        self.currmaplist = []
         self.hp = INITIALSTARTINGLIVES
         self.enemycount = INITIALENEMYCOUNT
         self.playerspeed = PLAYER_SPEED
@@ -102,10 +103,24 @@ class Game:
 
     # Load map for the first time
     def load_map(self):
-        # Open and read map
+        # Store last played map
+        if self.currmaplist != []:
+            lastmap = self.currmaplist[-1]
+        else:
+            lastmap = None
+
+        # Reload maps
         self.currmaplist = random.sample(self.maplist, 5)
         random.shuffle(self.currmaplist)
         print(self.currmaplist)
+
+        # Keep reloading maps to prevent repeat levels
+        while self.currmaplist[0] == lastmap:
+            self.currmaplist = random.sample(self.maplist, 5)
+            random.shuffle(self.currmaplist)
+            print(self.currmaplist)
+
+        # Open and read map
         self.currmap = 0
         self.map_data = []
         with open(path.join(map_folder, 'map' + str(self.currmaplist[0]) + '.txt'), 'rt') as f:
