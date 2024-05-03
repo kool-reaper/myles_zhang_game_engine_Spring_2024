@@ -145,8 +145,8 @@ class Player(Sprite):
             if group == self.game.doors:
                 # Change variables for powerscaling
                 if self.game.powerscaling == True:
-                    if self.game.playerspeed < 300:
-                        self.game.playerspeed += 5
+                    if self.game.playerspeed < 360:
+                        self.game.playerspeed += 3
                 # Commence round if there are no more maps
                 if self.game.gamelevel == MAXMAP:
                     self.game.gamelevel = "0"

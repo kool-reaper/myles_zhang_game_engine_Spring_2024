@@ -97,6 +97,8 @@ class Game:
         self.LBbox = Image(self, self.LBbox_img)
         self.LBbutton_img = pg.image.load(path.join(img_folder, 'Leaderboardbutton.png')).convert_alpha()
         self.LBbutton = Button(self, self.LBbutton_img)
+        self.infobutton_img = pg.image.load(path.join(img_folder, 'Infobutton.png')).convert_alpha()
+        self.infobutton = Button(self, self.infobutton_img)
 
     # Load map for the first time
     def load_map(self):
@@ -170,7 +172,7 @@ class Game:
             self.spawnplacelist.remove(cointile)
             o += 1
 
-    # run method
+    # Run method
     def run(self):
         self.playing = True
         while self.playing:
@@ -196,12 +198,14 @@ class Game:
                 self.leaderboard()
             if self.gamestate == "LBentry":
                 self.LBentry()
+            if self.gamestate == "info":
+                self.infoscreen()
 
         # Load events
         while self.running:
             self.events()
 
-    # Quit function
+    # Quit method
     def quit(self):
         pg.quit()
         sys.exit()
@@ -301,6 +305,8 @@ class Game:
                         self.LBupdate()
                 if event.key == pg.K_ESCAPE:
                     if self.gamestate == "leaderboard":
+                        self.gamestate = "mainmenu"
+                    if self.gamestate == "info":
                         self.gamestate = "mainmenu"
 
     # Check if score is high enough for leaderboard
@@ -404,13 +410,13 @@ class Game:
         if self.characternumber == 0:
             self.coinspawncount = 5
         if self.characternumber == 1:
-            self.playerspeed = 350
+            self.playerspeed = 360
         if self.characternumber == 2:
             self.hp = 5
         if self.characternumber == 3:
             self.powerscaling = True
         if self.characternumber == 4:
-            self.playerspeed = 250
+            self.playerspeed = 240
             self.hp = 2
 
     # Display paused screen
@@ -464,6 +470,41 @@ class Game:
         # Draw leaderbaord button
         if self.LBbutton.draw(self.screen, 512, 644, 1):
             self.gamestate = "leaderboard"
+
+        # Draw information button
+        if self.infobutton.draw(self.screen, 100, 644, 1):
+            self.gamestate = "info"
+
+        pg.display.flip()
+
+    def infoscreen(self):
+        self.screen.fill(GRAY)
+
+        # How to play
+        self.draw_text(self.screen, "How 2 play:", 50, BLACK, "tl", 170, 50)
+        self.draw_text(self.screen, "Collect yellow coins for score", 30, BLACK, "tl", 170, 100)
+        self.draw_text(self.screen, "Reach green door to move to next level", 30, BLACK, "tl", 170, 130)
+        self.draw_text(self.screen, "Hitting a red enemy damages you", 30, BLACK, "tl", 170, 160)
+        self.draw_text(self.screen, "Top 10 scores make it to the leaderboard", 30, BLACK, "tl", 170, 190)
+        self.draw_text(self.screen, "An enemy is added every round (or 5 levels)", 30, BLACK, "tl", 170, 220)
+
+        # Controls explanation
+        self.draw_text(self.screen, "Controls:", 50, BLACK, "tl", 170, 300)
+        self.draw_text(self.screen, "WASD or arrowkeys to move", 30, BLACK, "tl", 170, 350)
+        self.draw_text(self.screen, "r to restart", 30, BLACK, "tl", 170, 380)
+
+        # Detailed character information
+        self.draw_text(self.screen, "Character information:", 50, BLACK, "tl", 170, 460)
+        self.draw_text(self.screen, "Tyler spawns one extra coin per level", 30, BLACK, "tl", 170, 510)
+        self.draw_text(self.screen, "Adrian is about 20% faster", 30, BLACK, "tl", 170, 540)
+        self.draw_text(self.screen, "Ramiel has 2 extra lives", 30, BLACK, "tl", 170, 570)
+        self.draw_text(self.screen, "Robbie gains 1% speed per level and an extra spawned coin per 10 levels", 30, BLACK, "tl", 170, 600)
+        self.draw_text(self.screen, "Note: Robbie's speed is capped at 20%", 30, BLACK, "tl", 170, 630)
+        self.draw_text(self.screen, "Myles has 1 less life and is 20% slower", 30, BLACK, "tl", 170, 660)
+
+        # Draw exit button
+        if self.leftbtn.draw(self.screen, 85, 50, 1):
+            self.gamestate = "mainmenu"
 
         pg.display.flip()
 
@@ -524,7 +565,7 @@ class Game:
                 self.Myles.draw(self.screen, x + 80, y + 60, 1)
                 
         # Draw exit button
-        if self.leftbtn.draw(self.screen, 150, 50, 1):
+        if self.leftbtn.draw(self.screen, 85, 50, 1):
             self.gamestate = "mainmenu"
 
         pg.display.flip()
