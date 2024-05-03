@@ -107,6 +107,7 @@ class Game:
         random.shuffle(self.currmaplist)
         print(self.currmaplist)
         self.currmap = 0
+        self.map_data = []
         with open(path.join(map_folder, 'map' + str(self.currmaplist[0]) + '.txt'), 'rt') as f:
             for line in f:
                 self.map_data.append(line)
@@ -129,7 +130,8 @@ class Game:
     # Init all variables, setup groups, instantiate classes
     def new(self):
         # Reload spawnpoints
-        self.spawnplacelist = []
+        self.enemyspawnplacelist = []
+        self.coinspawnplacelist = []
 
         # Initialize groups
         self.game_sprites = pg.sprite.Group()
@@ -151,25 +153,30 @@ class Game:
                 if tile == 'E':
                     Enemy(self, col, row)
                 if tile == ".":
-                    # Add . tiles to potential spawnpoints
-                    self.spawnplacelist.append((col, row))
+                    # Add . tiles to potential coin + enemy spawnpoints
+                    self.enemyspawnplacelist.append((col, row))
+                    self.coinspawnplacelist.append((col, row))
+                if tile == "-":
+                    # Add - tiles to potential coin spawnpoints
+                    self.coinspawnplacelist.append((col, row))
         
         # Spawn enemies
         i = 1
         while i <= self.enemycount:
             # Find random spawnpoint, remove spawnpoint from list to prevent overlap
-            enemytile = random.choice(self.spawnplacelist)
+            enemytile = random.choice(self.enemyspawnplacelist)
             Enemy(self, enemytile[0], enemytile[1])
-            self.spawnplacelist.remove(enemytile)
+            self.enemyspawnplacelist.remove(enemytile)
+            self.coinspawnplacelist.remove(enemytile)
             i += 1
         
         # Spawn coins
         o = 1
         while o <= self.coinspawncount:
             # Find random spawnpoint, remove spawnpoint from list to prevent overlap
-            cointile = random.choice(self.spawnplacelist)
+            cointile = random.choice(self.coinspawnplacelist)
             Coin(self, cointile[0], cointile[1])
-            self.spawnplacelist.remove(cointile)
+            self.coinspawnplacelist.remove(cointile)
             o += 1
 
     # Run method
@@ -629,12 +636,13 @@ class Game:
         if self.rightbtn.draw(self.screen, 512, 550, 1):
             # Reset to level 1
             self.gamelevel = 0
+            self.player.changelevel = False
 
             # Increaes enemy count per level
             self.enemycount += 1
 
             # Update map and gamestate
-            self.update_map()
+            self.load_map()
             self.new()
             self.gamestate = "playing"
 

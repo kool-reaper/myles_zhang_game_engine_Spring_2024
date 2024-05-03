@@ -10,9 +10,19 @@
         "character": 3
     },
     {
+        "username": "Alex",
+        "score": 66,
+        "character": 2
+    },
+    {
         "username": "Adrian",
         "score": 61,
         "character": 3
+    },
+    {
+        "username": "Adrian",
+        "score": 60,
+        "character": 0
     },
     {
         "username": "Rohan",
@@ -37,16 +47,6 @@
     {
         "username": "Ben",
         "score": 50,
-        "character": 1
-    },
-    {
-        "username": "Adrian",
-        "score": 49,
-        "character": 1
-    },
-    {
-        "username": "nate",
-        "score": 45,
         "character": 1
     }
 ]
