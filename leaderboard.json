@@ -1,8 +1,23 @@
 [
     {
+        "username": "Alex",
+        "score": 116,
+        "character": 3
+    },
+    {
         "username": "Smartziboi",
         "score": 94,
         "character": 0
+    },
+    {
+        "username": "Alex",
+        "score": 76,
+        "character": 2
+    },
+    {
+        "username": "Alex",
+        "score": 76,
+        "character": 3
     },
     {
         "username": "nice",
@@ -33,20 +48,5 @@
         "username": "Sammm",
         "score": 52,
         "character": 3
-    },
-    {
-        "username": "Adrian",
-        "score": 50,
-        "character": 1
-    },
-    {
-        "username": "Sam",
-        "score": 50,
-        "character": 3
-    },
-    {
-        "username": "Ben",
-        "score": 50,
-        "character": 1
     }
 ]

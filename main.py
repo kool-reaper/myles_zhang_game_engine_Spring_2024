@@ -50,7 +50,7 @@ class Game:
 
         # Game states
         self.running = True
-        self.gamestate = "mainmenu"
+        self.gamestate = "startscreen"
         self.paused = False
 
         # Player statistics
@@ -203,6 +203,8 @@ class Game:
             self.events()
 
             # Display screens depending on gamestate
+            if self.gamestate == "startscreen":
+                self.startscreen()
             if self.gamestate == "mainmenu":
                 self.main_menu()
             if self.gamestate == "playing":
@@ -449,6 +451,20 @@ class Game:
         self.draw_text(self.screen, "PAUSED", 150, BLACK, "tm", 512, 300)
         self.draw_text(self.screen, "press escape to continue", 30, BLACK, "tm", 512, 470)
 
+    # Display start screen
+    def startscreen(self):
+        self.screen.fill(GRAY)
+        self.draw_text(self.screen, "AE", 200, BLACK, "tm", 512, 200)
+
+        # Draw play button
+        if self.playbtn.draw(self.screen, 512, 444, 1):
+            self.gamestate = "mainmenu"
+            self.map_data = []
+            self.charactereffects()
+            self.load_map()
+
+        pg.display.flip()
+
     # Display main menu screen
     def main_menu(self):
         self.screen.fill(GRAY)
@@ -459,6 +475,7 @@ class Game:
             self.map_data = []
             self.charactereffects()
             self.load_map()
+            self.paused = False
 
         # Character selection
         if self.leftbtn.draw(self.screen, 312, 224, 1):
@@ -499,6 +516,7 @@ class Game:
 
         pg.display.flip()
 
+    # Display information screen
     def infoscreen(self):
         self.screen.fill(GRAY)
 
@@ -600,6 +618,9 @@ class Game:
         self.draw_text(self.screen, "TOP 10 SCORE!", 150, WHITE, "tm", 512, 100)
         self.draw_text(self.screen, "Enter name:", 90, WHITE, "tm", 512, 250)
        
+        # Draw text box
+        pg.draw.rect(self.screen, (255, 255, 255), (200, 350, 624, 100), 3)
+
         # Display typing
         self.draw_text(self.screen, self.username, 90, WHITE, "tm", 512, 350)
         
