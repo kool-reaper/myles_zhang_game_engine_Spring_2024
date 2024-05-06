@@ -29,7 +29,8 @@ class Player(Sprite):
         self.game = game
 
         # Initialize player display
-        self.image = game.player_img
+        player_img = pg.image.load(path.join(img_folder, 'player.png')).convert_alpha()
+        self.image = player_img
         self.rect = self.image.get_rect()
         self.x = x * TILESIZE
         self.y = y * TILESIZE
@@ -312,14 +313,13 @@ class Door(Sprite):
 # This way, you cannot activate multiple buttons with one click
 class Button():
     # Initialize Class
-    def __init__(self, game, img):
+    def __init__(self, img):
         # Initialize display
         self.height = img.get_height()
         self.width = img.get_width()
         self.img = img
 
         # Initialize variables
-        self.game = game
         self.clicked = False
 
     # Drawing the button
@@ -367,11 +367,10 @@ class Button():
 # Image Class
 class Image():
     # Initialize Class
-    def __init__(self, game, img):
+    def __init__(self, img):
         # Initialize display
         self.height = img.get_height()
         self.width = img.get_width()
-        self.game = game
         self.img = img
 
     # Displaying the Image

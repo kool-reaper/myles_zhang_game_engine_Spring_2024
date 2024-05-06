@@ -1,6 +1,7 @@
 # this file was created by the one and only Myles Zhang
 
 from os import path
+import pygame as pg
 
 # display settings
 WIDTH = 1024
@@ -28,6 +29,7 @@ INITIALCOINCOUNT = 4
 MAXMAP = 4
 PLAYERSPRITESHEET = "spritesheet.png"
 INITIALSTARTINGLIVES = 3
+SCREEN = pg.display.set_mode((WIDTH, HEIGHT))
 
 # Folder initialization
 game_folder = path.dirname(__file__)

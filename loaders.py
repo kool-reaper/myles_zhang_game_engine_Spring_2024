@@ -1,0 +1,30 @@
+import pygame as pg
+from settings import *
+from sprites import *
+
+pg.init()
+
+playbtn_img = pg.image.load(path.join(img_folder, 'play.png')).convert_alpha()
+playbtn = Button(playbtn_img)
+restart_img = pg.image.load(path.join(img_folder, 'Restart.png')).convert_alpha()
+restartbtn = Button(restart_img)
+left_img = pg.image.load(path.join(img_folder, 'Leftbutton.png')).convert_alpha()
+leftbtn = Button(left_img)
+right_img = pg.image.load(path.join(img_folder, 'Rightbutton.png')).convert_alpha()
+rightbtn = Button(right_img)
+Tyler_img = pg.image.load(path.join(img_folder, 'Tyler.png')).convert_alpha()
+Tyler = Image(Tyler_img)
+Adrian_img = pg.image.load(path.join(img_folder, 'Adrian.png')).convert_alpha()
+Adrian = Image(Adrian_img)
+Myles_img = pg.image.load(path.join(img_folder, 'Myles.png')).convert_alpha()
+Myles = Image(Myles_img)
+Ramiel_img = pg.image.load(path.join(img_folder, 'Rameil.png')).convert_alpha()
+Rameil = Image(Ramiel_img)
+Robbie_img = pg.image.load(path.join(img_folder, 'Robbie.png')).convert_alpha()
+Robbie = Image(Robbie_img)
+LBbox_img = pg.image.load(path.join(img_folder, 'Leaderboardbox.png')).convert_alpha()
+LBbox = Image(LBbox_img)
+LBbutton_img = pg.image.load(path.join(img_folder, 'Leaderboardbutton.png')).convert_alpha()
+LBbutton = Button(LBbutton_img)
+infobutton_img = pg.image.load(path.join(img_folder, 'Infobutton.png')).convert_alpha()
+infobutton = Button(infobutton_img)
