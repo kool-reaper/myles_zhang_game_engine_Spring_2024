@@ -44,13 +44,14 @@ class Game:
     def __init__(self):
         # General game initialization
         pg.init()
+        self.screen = SCREEN
         pg.display.set_caption(TITLE)
         self.clock = pg.time.Clock()
         pg.key.set_repeat(500, 100)
 
         # Game states
         self.running = True
-        self.gamestate = "startscreen"
+        self.gamestate = "damaged"
         self.paused = False
 
         # Player statistics
@@ -210,24 +211,24 @@ class Game:
     # Draw grid
     def draw_grid(self):
         for x in range (0, WIDTH, TILESIZE):
-            pg.draw.line(SCREEN, LIGHTGRAY, (x,0), (x, HEIGHT))
+            pg.draw.line(self.screen, LIGHTGRAY, (x,0), (x, HEIGHT))
         for y in range (0, WIDTH, TILESIZE):
-            pg.draw.line(SCREEN, LIGHTGRAY, (0,y), (WIDTH, y))
+            pg.draw.line(self.screen, LIGHTGRAY, (0,y), (WIDTH, y))
 
     # Draw ingame display
     def draw(self):
         # Draw ingame assets
-        SCREEN.fill(BGCOLOR)
+        self.screen.fill(BGCOLOR)
         self.draw_grid()
-        self.game_sprites.draw(SCREEN)
+        self.game_sprites.draw(self.screen)
 
         # Draw paused screen
         if self.paused == True:
             self.pausedstate()
         else:
             # Draw statistics trackers
-            self.draw_text(SCREEN, "Coins: " + str(self.coincount), 42, BLACK, "tl", 48, 32)
-            self.draw_text(SCREEN, "Lives: " + str(self.hp), 42, BLACK, "tl", 50, 96)
+            self.draw_text(self.screen, "Coins: " + str(self.coincount), 42, BLACK, "tl", 48, 32)
+            self.draw_text(self.screen, "Lives: " + str(self.hp), 42, BLACK, "tl", 50, 96)
 
         pg.display.flip()
 
@@ -295,12 +296,15 @@ class Game:
                         self.gamestate = "playing"
                     elif self.gamestate == "LBentry":
                         self.LBupdate()
+                    elif self.gamestate == "startscreen":
+                        self.gamestate = "mainmenu"
+                        
                 if event.key == pg.K_ESCAPE:
                     if self.gamestate == "leaderboard":
                         self.gamestate = "mainmenu"
                     if self.gamestate == "info":
                         self.gamestate = "mainmenu"
-
+                    
     # Check if score is high enough for leaderboard
     def LBcheck(self):
         self.update_map()
@@ -415,17 +419,18 @@ class Game:
     def pausedstate(self):
         pausedbg = pg.Surface((1024, 768), pg.SRCALPHA)
         pausedbg.fill((206, 204, 197, 128))
-        SCREEN.blit(pausedbg, (0, 0))
-        self.draw_text(SCREEN, "PAUSED", 150, BLACK, "tm", 512, 300)
-        self.draw_text(SCREEN, "press escape to continue", 30, BLACK, "tm", 512, 470)
+        self.screen.blit(pausedbg, (0, 0))
+        self.draw_text(self.screen, "PAUSED", 150, BLACK, "tm", 512, 300)
+        self.draw_text(self.screen, "press escape to continue", 30, BLACK, "tm", 512, 470)
 
     # Display start screen
     def startscreen(self):
-        SCREEN.fill(GRAY)
-        self.draw_text(SCREEN, "AE", 200, BLACK, "tm", 512, 200)
+        self.screen.fill(GRAY)
+        self.draw_text(self.screen, "Made by Myles Zhang", 20, BLACK, "tm", 512, 700)
+        title.draw(self.screen, 512, 70, 20)
 
         # Draw play button
-        if playbtn.draw(SCREEN, 512, 444, 1):
+        if startbtn.draw(self.screen, 512, 574, 5):
             self.gamestate = "mainmenu"
             self.map_data = []
             self.charactereffects()
@@ -435,10 +440,10 @@ class Game:
 
     # Display main menu screen
     def main_menu(self):
-        SCREEN.fill(GRAY)
+        self.screen.fill(GRAY)
 
         # Draw play button
-        if playbtn.draw(SCREEN, 512, 544, 1):
+        if playbtn.draw(self.screen, 512, 544, 1):
             self.gamestate = "playing"
             self.map_data = []
             self.charactereffects()
@@ -446,91 +451,91 @@ class Game:
             self.paused = False
 
         # Character selection
-        if leftbtn.draw(SCREEN, 312, 224, 1):
+        if leftbtn.draw(self.screen, 312, 224, 1):
             self.characternumber -= 1
-        if rightbtn.draw(SCREEN, 712, 224, 1):
+        if rightbtn.draw(self.screen, 712, 224, 1):
             self.characternumber += 1
         self.characternumber = self.characternumber % len(self.characterlist)
 
         # Character selection display and descriptions
         if self.characternumber == 0:
-            Tyler.draw(SCREEN, 512, 200, 4)
-            self.draw_text(SCREEN, "Tyler", 42, BLACK, "tm", 512, 130)
-            self.draw_text(SCREEN, "Extra coins", 42, BLACK, "tm", 512, 360)
+            Tyler.draw(self.screen, 512, 200, 4)
+            self.draw_text(self.screen, "Tyler", 42, BLACK, "tm", 512, 130)
+            self.draw_text(self.screen, "Extra coins", 42, BLACK, "tm", 512, 360)
         elif self.characternumber == 1:
-            Adrian.draw(SCREEN, 512, 200, 4)
-            self.draw_text(SCREEN, "Adrian", 42, BLACK, "tm", 512, 130)
-            self.draw_text(SCREEN, "Speed bonus", 42, BLACK, "tm", 512, 360)
+            Adrian.draw(self.screen, 512, 200, 4)
+            self.draw_text(self.screen, "Adrian", 42, BLACK, "tm", 512, 130)
+            self.draw_text(self.screen, "Speed bonus", 42, BLACK, "tm", 512, 360)
         elif self.characternumber == 2:
-            Rameil.draw(SCREEN, 512, 200, 4)
-            self.draw_text(SCREEN, "Rameil", 42, BLACK, "tm", 512, 130)
-            self.draw_text(SCREEN, "Extra lives", 42, BLACK, "tm", 512, 360)
+            Rameil.draw(self.screen, 512, 200, 4)
+            self.draw_text(self.screen, "Rameil", 42, BLACK, "tm", 512, 130)
+            self.draw_text(self.screen, "Extra lives", 42, BLACK, "tm", 512, 360)
         elif self.characternumber == 3:
-            Robbie.draw(SCREEN, 512, 200, 4)
-            self.draw_text(SCREEN, "Robbie", 42, BLACK, "tm", 512, 130)
-            self.draw_text(SCREEN, "Power scaling", 42, BLACK, "tm", 512, 360)
+            Robbie.draw(self.screen, 512, 200, 4)
+            self.draw_text(self.screen, "Robbie", 42, BLACK, "tm", 512, 130)
+            self.draw_text(self.screen, "Power scaling", 42, BLACK, "tm", 512, 360)
         elif self.characternumber == 4:
-            Myles.draw(SCREEN, 512, 200, 4)
-            self.draw_text(SCREEN, "Myles", 42, BLACK, "tm", 512, 130)
-            self.draw_text(SCREEN, "Challenge character", 42, BLACK, "tm", 512, 360)
+            Myles.draw(self.screen, 512, 200, 4)
+            self.draw_text(self.screen, "Myles", 42, BLACK, "tm", 512, 130)
+            self.draw_text(self.screen, "Challenge character", 42, BLACK, "tm", 512, 360)
         
         # Draw leaderbaord button
-        if LBbutton.draw(SCREEN, 512, 644, 1):
+        if LBbutton.draw(self.screen, 512, 644, 1):
             self.gamestate = "leaderboard"
 
         # Draw information button
-        if infobutton.draw(SCREEN, 100, 644, 1):
+        if infobutton.draw(self.screen, 100, 644, 1):
             self.gamestate = "info"
 
         pg.display.flip()
 
     # Display information screen
     def infoscreen(self):
-        SCREEN.fill(GRAY)
+        self.screen.fill(GRAY)
 
         # How to play
-        self.draw_text(SCREEN, "How 2 play:", 50, BLACK, "tl", 170, 50)
-        self.draw_text(SCREEN, "Collect yellow coins for score", 30, BLACK, "tl", 170, 100)
-        self.draw_text(SCREEN, "Reach green door to move to next level", 30, BLACK, "tl", 170, 130)
-        self.draw_text(SCREEN, "Hitting a red enemy damages you", 30, BLACK, "tl", 170, 160)
-        self.draw_text(SCREEN, "Top 10 scores make it to the leaderboard", 30, BLACK, "tl", 170, 190)
-        self.draw_text(SCREEN, "An enemy is added every round (or 5 levels)", 30, BLACK, "tl", 170, 220)
+        self.draw_text(self.screen, "How 2 play:", 50, BLACK, "tl", 170, 50)
+        self.draw_text(self.screen, "Collect yellow coins for score", 30, BLACK, "tl", 170, 100)
+        self.draw_text(self.screen, "Reach green door to move to next level", 30, BLACK, "tl", 170, 130)
+        self.draw_text(self.screen, "Hitting a red enemy damages you", 30, BLACK, "tl", 170, 160)
+        self.draw_text(self.screen, "Top 10 scores make it to the leaderboard", 30, BLACK, "tl", 170, 190)
+        self.draw_text(self.screen, "An enemy is added every round (or 5 levels)", 30, BLACK, "tl", 170, 220)
 
         # Controls explanation
-        self.draw_text(SCREEN, "Controls:", 50, BLACK, "tl", 170, 300)
-        self.draw_text(SCREEN, "WASD or arrowkeys to move", 30, BLACK, "tl", 170, 350)
-        self.draw_text(SCREEN, "r to restart", 30, BLACK, "tl", 170, 380)
+        self.draw_text(self.screen, "Controls:", 50, BLACK, "tl", 170, 300)
+        self.draw_text(self.screen, "WASD or arrowkeys to move", 30, BLACK, "tl", 170, 350)
+        self.draw_text(self.screen, "r to restart", 30, BLACK, "tl", 170, 380)
 
         # Detailed character information
-        self.draw_text(SCREEN, "Character information:", 50, BLACK, "tl", 170, 460)
-        self.draw_text(SCREEN, "Tyler spawns one extra coin per level", 30, BLACK, "tl", 170, 510)
-        self.draw_text(SCREEN, "Adrian is about 20% faster", 30, BLACK, "tl", 170, 540)
-        self.draw_text(SCREEN, "Ramiel has 2 extra lives", 30, BLACK, "tl", 170, 570)
-        self.draw_text(SCREEN, "Robbie gains 1% speed per level and an extra spawned coin per 10 levels", 30, BLACK, "tl", 170, 600)
-        self.draw_text(SCREEN, "Note: Robbie's speed is capped at 20%", 30, BLACK, "tl", 170, 630)
-        self.draw_text(SCREEN, "Myles has 1 less life and is 20% slower", 30, BLACK, "tl", 170, 660)
+        self.draw_text(self.screen, "Character information:", 50, BLACK, "tl", 170, 460)
+        self.draw_text(self.screen, "Tyler spawns one extra coin per level", 30, BLACK, "tl", 170, 510)
+        self.draw_text(self.screen, "Adrian is about 20% faster", 30, BLACK, "tl", 170, 540)
+        self.draw_text(self.screen, "Ramiel has 2 extra lives", 30, BLACK, "tl", 170, 570)
+        self.draw_text(self.screen, "Robbie gains 1% speed per level and an extra spawned coin per 10 levels", 30, BLACK, "tl", 170, 600)
+        self.draw_text(self.screen, "Note: Robbie's speed is capped at 20%", 30, BLACK, "tl", 170, 630)
+        self.draw_text(self.screen, "Myles has 1 less life and is 20% slower", 30, BLACK, "tl", 170, 660)
 
         # Draw exit button
-        if leftbtn.draw(SCREEN, 85, 50, 1):
+        if leftbtn.draw(self.screen, 85, 50, 1):
             self.gamestate = "mainmenu"
 
         pg.display.flip()
 
     # Display leaderboard
     def leaderboard(self):
-        SCREEN.fill(GRAY)
+        self.screen.fill(GRAY)
 
         # Draw leaderboard boxes
-        LBbox.draw(SCREEN, 356, 50, 1.5)
-        LBbox.draw(SCREEN, 668, 50, 1.5)
-        LBbox.draw(SCREEN, 356, 185, 1.5)
-        LBbox.draw(SCREEN, 668, 185, 1.5)
-        LBbox.draw(SCREEN, 356, 320, 1.5)
-        LBbox.draw(SCREEN, 668, 320, 1.5)
-        LBbox.draw(SCREEN, 356, 455, 1.5)
-        LBbox.draw(SCREEN, 668, 455, 1.5)
-        LBbox.draw(SCREEN, 356, 590, 1.5)
-        LBbox.draw(SCREEN, 668, 590, 1.5)
+        LBbox.draw(self.screen, 356, 50, 1.5)
+        LBbox.draw(self.screen, 668, 50, 1.5)
+        LBbox.draw(self.screen, 356, 185, 1.5)
+        LBbox.draw(self.screen, 668, 185, 1.5)
+        LBbox.draw(self.screen, 356, 320, 1.5)
+        LBbox.draw(self.screen, 668, 320, 1.5)
+        LBbox.draw(self.screen, 356, 455, 1.5)
+        LBbox.draw(self.screen, 668, 455, 1.5)
+        LBbox.draw(self.screen, 356, 590, 1.5)
+        LBbox.draw(self.screen, 668, 590, 1.5)
 
         # Open leaderboard file
         if os.path.exists("leaderboard.json") and os.path.getsize("leaderboard.json") > 0:
@@ -556,72 +561,75 @@ class Game:
                 username = entry["username"]
 
             # Draw username and score information
-            self.draw_text(SCREEN, username, 32, WHITE, "tl", x - 100, y + 10)
-            self.draw_text(SCREEN, str(entry["score"]), 32, WHITE, "tl", x - 100, y + 52)
+            self.draw_text(self.screen, username, 32, WHITE, "tl", x - 100, y + 10)
+            self.draw_text(self.screen, str(entry["score"]), 32, WHITE, "tl", x - 100, y + 52)
 
             # Draw character used
             characternumber = entry["character"]
             if characternumber == 0:
-                Tyler.draw(SCREEN, x + 80, y + 60, 1)
+                Tyler.draw(self.screen, x + 80, y + 60, 1)
             elif characternumber == 1:
-                Adrian.draw(SCREEN, x + 80, y + 60, 1)
+                Adrian.draw(self.screen, x + 80, y + 60, 1)
             elif characternumber == 2:
-                Rameil.draw(SCREEN, x + 80, y + 60, 1)
+                Rameil.draw(self.screen, x + 80, y + 60, 1)
             elif characternumber == 3:
-                Robbie.draw(SCREEN, x + 80, y + 60, 1)
+                Robbie.draw(self.screen, x + 80, y + 60, 1)
             elif characternumber == 4:
-                Myles.draw(SCREEN, x + 80, y + 60, 1)
+                Myles.draw(self.screen, x + 80, y + 60, 1)
                 
         # Draw exit button
-        if leftbtn.draw(SCREEN, 85, 50, 1):
+        if leftbtn.draw(self.screen, 85, 50, 1):
             self.gamestate = "mainmenu"
 
         pg.display.flip()
 
     # Leaderboard input
     def LBentry(self):
-        SCREEN.fill(BLACK)
+        self.screen.fill(BLACK)
 
         # Draw text
-        self.draw_text(SCREEN, "TOP 10 SCORE!", 150, WHITE, "tm", 512, 100)
-        self.draw_text(SCREEN, "Enter name:", 90, WHITE, "tm", 512, 250)
+        self.draw_text(self.screen, "TOP 10 SCORE!", 150, WHITE, "tm", 512, 100)
+        self.draw_text(self.screen, "Enter name:", 90, WHITE, "tm", 512, 250)
        
         # Draw text box
-        pg.draw.rect(SCREEN, (255, 255, 255), (200, 350, 624, 100), 3)
+        pg.draw.rect(self.screen, (255, 255, 255), (200, 350, 624, 100), 3)
 
         # Display typing
-        self.draw_text(SCREEN, self.username, 90, WHITE, "tm", 512, 350)
+        self.draw_text(self.screen, self.username, 90, WHITE, "tm", 512, 350)
         
         # Draw restart button
-        if restartbtn.draw(SCREEN, 512, 550, 1):
+        if restartbtn.draw(self.screen, 512, 550, 1):
             self.LBupdate()
 
         pg.display.flip()
 
     # Draw game over screen
     def gameover(self):
-        SCREEN.fill(BLACK)
+        self.screen.fill(GRAY)
 
-        # Draw text
-        self.draw_text(SCREEN, "YOU DIED", 180, WHITE, "tm", 512, 200)
-        self.draw_text(SCREEN, "Final coin count: " + str(self.coincount), 90, WHITE, "tm", 512, 400)
+        # Draw "you lost" sign
+        youlost.draw(self.screen, 512, 100, 8)
+
+        # Display final score count
+        self.draw_text(self.screen, "Final coin count: " + str(self.coincount), 90, WHITE, "tm", 512, 420)
 
         # Draw exit button
-        if rightbtn.draw(SCREEN, 512, 550, 1):
+        if rightbtn.draw(self.screen, 512, 550, 1):
             self.LBcheck()
 
         pg.display.flip()
 
     # Draw life lost screen
     def lifelost(self):
-        SCREEN.fill(BLACK)
+        self.screen.fill(GRAY)
         
-        # Draw text
-        self.draw_text(SCREEN, "LIFE LOST", 180, WHITE, "tm", 512, 200)
-        self.draw_text(SCREEN, str(self.hp) + " REMAINING", 180, WHITE, "tm", 512, 350)
+        # Draw "life lost" screen
+        lifelost.draw(self.screen, 512, 100, 8)
+        
+        self.draw_text(self.screen, str(self.hp) + " REMAINING", 180, WHITE, "tm", 512, 350)
 
         # Draw restart button
-        if restartbtn.draw(SCREEN, 512, 550, 1):
+        if restartbtn.draw(self.screen, 512, 550, 1):
             self.update_map()
             self.new()
             self.gamestate = "playing"
@@ -630,14 +638,13 @@ class Game:
 
     # Win function
     def gamewon(self):
-        SCREEN.fill(BLACK)
+        self.screen.fill(GRAY)
 
-        # Draw text
-        self.draw_text(SCREEN, "ROUND", 180, WHITE, "tm", 512, 200)
-        self.draw_text(SCREEN, "COMPLETE", 180, WHITE, "tm", 512, 350)
+        # Draw "round complete" sign
+        roundcomplete.draw(self.screen, 512, 100, 8)
 
         # Draw continue button
-        if rightbtn.draw(SCREEN, 512, 550, 1):
+        if rightbtn.draw(self.screen, 512, 550, 1):
             # Reset to level 1
             self.gamelevel = 0
             self.player.changelevel = False
@@ -651,8 +658,6 @@ class Game:
             self.gamestate = "playing"
 
         pg.display.flip()
-
-    # Showing the go screen
 
 # Making and running the window
 g = Game()
