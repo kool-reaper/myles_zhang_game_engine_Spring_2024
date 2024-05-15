@@ -6,6 +6,7 @@ from sprites import *
 # Imitialize pygame
 pg.init()
 
+# (Youtube modified)
 # Load game buttons
 playbtn_img = pg.image.load(path.join(img_folder, 'play.png')).convert_alpha()
 playbtn = Button(playbtn_img)

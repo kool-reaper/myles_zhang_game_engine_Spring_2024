@@ -2,6 +2,19 @@
 # With help from Ai and Youtube
 # My first source control edit!
 
+# Sources:
+# ChatGPT
+# Youtube (CodingWithRuss)
+
+# Beta goal:
+# Character selection
+# Randomized maps
+# Leaderboard
+
+# Final goal:
+# Custom font
+# Better displays
+
 # Imports
 import pygame as pg
 from settings import *
@@ -17,30 +30,30 @@ from math import floor
 
 # This 'cooldown' class is designed to help us control time
 class Cooldown():
-    # Sets all properties to zero when instantiated...
+    # Sets all properties to zero when instantiated... (Cozort Code)
     def __init__(self):
         self.current_time = 0
         self.event_time = 0
         self.delta = 0
         # Ticking ensures the timer is counting...
-    # Must use ticking to count up or down
+    # Must use ticking to count up or down (Cozort Code)
     def ticking(self):
         self.current_time = floor((pg.time.get_ticks())/1000)
         self.delta = self.current_time - self.event_time
-    # Resets event time to zero - cooldown reset
+    # Resets event time to zero - cooldown reset (Cozort Code)
     def countdown(self, x):
         x = x - self.delta
         if x != None:
             return x
     def event_reset(self):
         self.event_time = floor((pg.time.get_ticks())/1000)
-    # Sets current time
+    # Sets current time (Cozort Code)
     def timer(self):
         self.current_time = floor((pg.time.get_ticks())/1000)
 
 # Creating game class
 class Game:
-    # Defining game class
+    # Defining game class (No ChatGPT used)
     def __init__(self):
         # General game initialization
         pg.init()
@@ -51,7 +64,7 @@ class Game:
 
         # Game states
         self.running = True
-        self.gamestate = "damaged"
+        self.gamestate = "startscreen"
         self.paused = False
 
         # Player statistics
@@ -70,7 +83,7 @@ class Game:
         self.username = ''
         self.coinbar = 0
 
-    # Load map for the first time
+    # Load map for the first time (No ChatGPT used)
     def load_map(self):
         # Store last played map
         if self.currmaplist != []:
@@ -98,7 +111,7 @@ class Game:
         # Create map
         self.new()
 
-    # Updating the map when the level changes
+    # Updating the map when the level changes (No ChatGPT used)
     def update_map(self):
         # Open and read map
         if self.player.changelevel == True:
@@ -111,7 +124,7 @@ class Game:
                     self.map_data.append(line)
             self.new()
 
-    # Init all variables, setup groups, instantiate classes
+    # Init all variables, setup groups, instantiate classes (No ChatGPT used)
     def new(self):
         # Reload spawnpoints
         self.enemyspawnplacelist = []
@@ -163,7 +176,7 @@ class Game:
             self.coinspawnplacelist.remove(cointile)
             o += 1
 
-    # Run method
+    # Run method (No ChatGPT used)
     def run(self):
         self.playing = True
         while self.playing:
@@ -198,24 +211,24 @@ class Game:
         while self.running:
             self.events()
 
-    # Quit method
+    # Quit method (No ChatGPT used)
     def quit(self):
         pg.quit()
         sys.exit()
 
-    # Update display and positions
+    # Update display and positions (No ChatGPT used)
     def update(self):
         self.game_sprites.update()
         self.update_map()
 
-    # Draw grid
+    # Draw grid (No ChatGPT used)
     def draw_grid(self):
         for x in range (0, WIDTH, TILESIZE):
             pg.draw.line(self.screen, LIGHTGRAY, (x,0), (x, HEIGHT))
         for y in range (0, WIDTH, TILESIZE):
             pg.draw.line(self.screen, LIGHTGRAY, (0,y), (WIDTH, y))
 
-    # Draw ingame display
+    # Draw ingame display (No ChatGPT used)
     def draw(self):
         # Draw ingame assets
         self.screen.fill(BGCOLOR)
@@ -232,7 +245,7 @@ class Game:
 
         pg.display.flip()
 
-    # Input method
+    # Input method (ChatGPT modified)
     def events(self):
         for event in pg.event.get():
             # Quit method
@@ -305,7 +318,7 @@ class Game:
                     if self.gamestate == "info":
                         self.gamestate = "mainmenu"
                     
-    # Check if score is high enough for leaderboard
+    # Check if score is high enough for leaderboard (ChatGPT modified)
     def LBcheck(self):
         self.update_map()
         self.new()
@@ -340,7 +353,7 @@ class Game:
         else:
             self.gamestate = "LBentry"
 
-    # Update leaderboard
+    # Update leaderboard (ChatGPT modified)
     def LBupdate(self):
         # Organize data to be saved
         LBdata = {
@@ -374,8 +387,8 @@ class Game:
         self.resetvar()
         self.gamestate = "mainmenu"
 
-    # Draw text
-    def draw_text(self, surface, text, size, color, tltm, x, y):
+    # Draw text (No ChatGPT used)
+    def adraw_text(self, surface, text, size, color, tltm, x, y):
         # Initialize text variables
         font_name = pg.font.match_font('arial')
         font = pg.font.Font(font_name, size)
@@ -387,10 +400,25 @@ class Game:
             text_rect.topleft = (x,y)
         if tltm == "tm":
             text_rect.midtop = (x,y)
+
+        surface.blit(text_surface, text_rect)
+
+    # Custom font testing (No ChatGPT used)
+    def draw_text(self, surface, text, size, color, tltm, x, y):
+        # Initialize text variables
+        testfont = pg.font.Font('font/Borderfont.otf', size)
+        text_surface = testfont.render(text, True, color)
+        text_rect = text_surface.get_rect()
+
+        # Figure out whether coordinates are from left or centered
+        if tltm == "tl":
+            text_rect.topleft = (x,y)
+        if tltm == "tm":
+            text_rect.midtop = (x,y)
         
         surface.blit(text_surface, text_rect)
 
-    # Reset game/player variables
+    # Reset game/player variables (No ChatGPT used)
     def resetvar(self):
         self.playerspeed = PLAYER_SPEED
         self.coinspawncount = INITIALCOINCOUNT
@@ -401,7 +429,7 @@ class Game:
         self.powerscaling = False
         self.username = ""
 
-    # Character effects
+    # Character effects (No ChatGPT used)
     def charactereffects(self):
         if self.characternumber == 0:
             self.coinspawncount = 5
@@ -415,7 +443,7 @@ class Game:
             self.playerspeed = 240
             self.hp = 2
 
-    # Display paused screen
+    # Display paused screen (No ChatGPT used)
     def pausedstate(self):
         pausedbg = pg.Surface((1024, 768), pg.SRCALPHA)
         pausedbg.fill((206, 204, 197, 128))
@@ -423,12 +451,11 @@ class Game:
         self.draw_text(self.screen, "PAUSED", 150, BLACK, "tm", 512, 300)
         self.draw_text(self.screen, "press escape to continue", 30, BLACK, "tm", 512, 470)
 
-    # Display start screen
+    # Display start screen (No ChatGPT used)
     def startscreen(self):
         self.screen.fill(GRAY)
-        self.draw_text(self.screen, "Made by Myles Zhang", 20, BLACK, "tm", 512, 700)
+        self.draw_text(self.screen, "Made by Myles Zhang", 30, BLACK, "tm", 512, 700)
         title.draw(self.screen, 512, 70, 20)
-
         # Draw play button
         if startbtn.draw(self.screen, 512, 574, 5):
             self.gamestate = "mainmenu"
@@ -438,7 +465,7 @@ class Game:
 
         pg.display.flip()
 
-    # Display main menu screen
+    # Display main menu screen (No ChatGPT used)
     def main_menu(self):
         self.screen.fill(GRAY)
 
@@ -489,7 +516,7 @@ class Game:
 
         pg.display.flip()
 
-    # Display information screen
+    # Display information screen (No ChatGPT used)
     def infoscreen(self):
         self.screen.fill(GRAY)
 
@@ -521,7 +548,7 @@ class Game:
 
         pg.display.flip()
 
-    # Display leaderboard
+    # Display leaderboard (ChatGPT modified)
     def leaderboard(self):
         self.screen.fill(GRAY)
 
@@ -583,7 +610,7 @@ class Game:
 
         pg.display.flip()
 
-    # Leaderboard input
+    # Leaderboard input (ChatGPT modified)
     def LBentry(self):
         self.screen.fill(BLACK)
 
@@ -603,7 +630,7 @@ class Game:
 
         pg.display.flip()
 
-    # Draw game over screen
+    # Draw game over screen (No ChatGPT used)
     def gameover(self):
         self.screen.fill(GRAY)
 
@@ -619,14 +646,14 @@ class Game:
 
         pg.display.flip()
 
-    # Draw life lost screen
+    # Draw life lost screen (NO ChatGPT used)
     def lifelost(self):
         self.screen.fill(GRAY)
         
         # Draw "life lost" screen
         lifelost.draw(self.screen, 512, 100, 8)
         
-        self.draw_text(self.screen, str(self.hp) + " REMAINING", 180, WHITE, "tm", 512, 350)
+        self.draw_text(self.screen, str(self.hp) + " REMChatGPTNING", 180, WHITE, "tm", 512, 350)
 
         # Draw restart button
         if restartbtn.draw(self.screen, 512, 550, 1):
@@ -636,7 +663,7 @@ class Game:
 
         pg.display.flip()
 
-    # Win function
+    # Win function (No Ai used)
     def gamewon(self):
         self.screen.fill(GRAY)
 
@@ -659,7 +686,9 @@ class Game:
 
         pg.display.flip()
 
-# Making and running the window
+# Making and running the window (No ChatGPT used)
 g = Game()
 while True:
     g.run()
+
+# ene

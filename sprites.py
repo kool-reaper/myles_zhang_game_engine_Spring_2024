@@ -21,7 +21,7 @@ class Spritesheet:
 
 # Player Class
 class Player(Sprite):
-    # Initialize class
+    # Initialize class (No ChatGPT used)
     def __init__(self, game, x, y):
         # Initialize group
         self.groups = game.game_sprites
@@ -45,7 +45,7 @@ class Player(Sprite):
         self.current_frame = 0
         self.last_update = 0
 
-    # Animate player sprite
+    # Animate player sprite (No ChatGPT used)
     def animate(self):
         # Choose different sprites depending on character chosen
         if self.game.characternumber == 0:
@@ -72,7 +72,7 @@ class Player(Sprite):
                 self.rect = self.image.get_rect()
                 self.rect.bottom = bottom
 
-    # Checking which keys are pressed
+    # Checking which keys are pressed (No ChatGPT used)
     def getkeys(self):
         # Movement keys
         self.vx, self.vy = 0, 0
@@ -108,7 +108,7 @@ class Player(Sprite):
             self.twopressed = False
             self.changelevel = True
 
-    # Collision with walls
+    # Collision with walls (No ChatGPT used)
     def collidewithwalls(self, dir):
         # Check horizontal collision
         if dir == 'x':
@@ -134,7 +134,7 @@ class Player(Sprite):
                 self.vy = 0
                 self.rect.y = self.y
 
-    # Collisions with objects
+    # Collisions with objects (No ChatGPT used)
     def collidewithobj(self, group, kill):
         hits = pg.sprite.spritecollide(self, group, kill)
         if hits:
@@ -166,8 +166,7 @@ class Player(Sprite):
                 self.game.hp -= 1
                 self.game.gamestate = "damaged"
 
-
-    # Updating the sprite and checking for collisions
+    # Updating the sprite and checking for collisions (No ChatGPT used)
     def update(self):
         # Animate sprite
         self.animate()
@@ -191,7 +190,7 @@ class Player(Sprite):
 
 # Enemy Class
 class Enemy (Sprite):
-    # Initialize class
+    # Initialize class (No ChatGPT used)
     def __init__(self, game, x, y):
         # Initialize groups
         self.groups = game.game_sprites, game.enemies
@@ -213,7 +212,7 @@ class Enemy (Sprite):
             self.vx *= 0.7071
             self.vy *= 0.7071
 
-    # Enemy bouncing off of walls
+    # Enemy bouncing off of walls (No ChatGPT used)
     def collidewithwalls(self, dir):
         # Check horizontal collision
         if dir == 'x':
@@ -243,7 +242,7 @@ class Enemy (Sprite):
                 self.vy = -self.vy
                 self.rect.y = self.y
 
-    # Updating the sprite and checking for collisions
+    # Updating the sprite and checking for collisions (No ChatGPT used)
     def update(self):
         # Control movement
         if self.game.paused == False:
@@ -258,7 +257,7 @@ class Enemy (Sprite):
 
 # Wall Class
 class Wall(Sprite):
-    # Initialize Class
+    # Initialize Class (No ChatGPT used)
     def __init__(self, game, x, y):
         # Initialize groups
         self.groups = game.game_sprites, game.walls
@@ -276,7 +275,7 @@ class Wall(Sprite):
 
 # Coin Class
 class Coin(Sprite):
-    # Initialize Class
+    # Initialize Class (No ChatGPT used)
     def __init__(self, game, x, y):
         # Initialize groups
         self.groups = game.game_sprites, game.coins
@@ -294,7 +293,7 @@ class Coin(Sprite):
 
 # Door Class
 class Door(Sprite):
-    # Initialize Class
+    # Initialize Class (No ChatGPT used)
     def __init__(self, game, x, y):
         self.groups = game.game_sprites, game.doors
         Sprite.__init__(self, self.groups)
@@ -312,7 +311,7 @@ class Door(Sprite):
 # Changed the code to not give an output when holding click over button; Only gives one output when mouse is released
 # This way, you cannot activate multiple buttons with one click
 class Button():
-    # Initialize Class
+    # Initialize Class (Youtube modified)
     def __init__(self, img):
         # Initialize display
         self.height = img.get_height()
@@ -322,7 +321,7 @@ class Button():
         # Initialize variables
         self.clicked = False
 
-    # Drawing the button
+    # Drawing the button (Youtube modified)
     def draw(self, surface, x, y, scale):
         # Natural state off
         action = False
@@ -366,14 +365,14 @@ class Button():
     
 # Image Class
 class Image():
-    # Initialize Class
+    # Initialize Class (Youtube modified)
     def __init__(self, img):
         # Initialize display
         self.height = img.get_height()
         self.width = img.get_width()
         self.img = img
 
-    # Displaying the Image
+    # Displaying the Image (Youtube modified)
     def draw(self, surface, x, y, scale):
         # Scale image
         self.image = pg.transform.scale(self.img, (int(self.width * scale), int(self.height * scale)))

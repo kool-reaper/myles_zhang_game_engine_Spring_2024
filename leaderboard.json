@@ -10,6 +10,11 @@
         "character": 0
     },
     {
+        "username": "Matthew",
+        "score": 78,
+        "character": 3
+    },
+    {
         "username": "Alex",
         "score": 76,
         "character": 2
@@ -43,10 +48,5 @@
         "username": "Rohan",
         "score": 55,
         "character": 1
-    },
-    {
-        "username": "Sammm",
-        "score": 52,
-        "character": 3
     }
 ]
