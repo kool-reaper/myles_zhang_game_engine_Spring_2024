@@ -240,9 +240,8 @@ class Game:
             self.pausedstate()
         else:
             # Draw statistics trackers
-            self.draw_text(self.screen, "Coins: " + str(self.coincount), 42, BLACK, "tl", 48, 32)
-            self.draw_text(self.screen, "Lives: " + str(self.hp), 42, BLACK, "tl", 50, 96)
-
+            self.draw_text(self.screen, "Coins: " + str(self.coincount), 42, "tl", 32, 5, BLACK, WHITE)
+            self.draw_text(self.screen, "Lives: " + str(self.hp), 42, "tl", 300, 5, BLACK, WHITE)
         pg.display.flip()
 
     # Input method (ChatGPT modified)
@@ -404,11 +403,14 @@ class Game:
         surface.blit(text_surface, text_rect)
 
     # Custom font testing (No ChatGPT used)
-    def draw_text(self, surface, text, size, color, tltm, x, y):
+    def draw_text(self, surface, text, size, tltm, x, y, bordercolor, fillingcolor):
         # Initialize text variables
-        testfont = pg.font.Font('font/Borderfont.otf', size)
-        text_surface = testfont.render(text, True, color)
-        text_rect = text_surface.get_rect()
+        borderfont = pg.font.Font('font/Borderfont.otf', size)
+        bordertext_surface = borderfont.render(text, True, bordercolor)
+        if fillingcolor != None:
+            fillingfont = pg.font.Font('font/Fillingfont.otf', size)
+            fillingtext_surface = fillingfont.render(text, True, fillingcolor)
+        text_rect = bordertext_surface.get_rect()
 
         # Figure out whether coordinates are from left or centered
         if tltm == "tl":
@@ -416,7 +418,9 @@ class Game:
         if tltm == "tm":
             text_rect.midtop = (x,y)
         
-        surface.blit(text_surface, text_rect)
+        if fillingfont != None:
+            surface.blit(fillingtext_surface, text_rect)
+        surface.blit(bordertext_surface, text_rect)
 
     # Reset game/player variables (No ChatGPT used)
     def resetvar(self):
@@ -448,13 +452,13 @@ class Game:
         pausedbg = pg.Surface((1024, 768), pg.SRCALPHA)
         pausedbg.fill((206, 204, 197, 128))
         self.screen.blit(pausedbg, (0, 0))
-        self.draw_text(self.screen, "PAUSED", 150, BLACK, "tm", 512, 300)
-        self.draw_text(self.screen, "press escape to continue", 30, BLACK, "tm", 512, 470)
+        self.draw_text(self.screen, "PAUSED", 150, "tm", 512, 300, BLACK, WHITE)
+        self.draw_text(self.screen, "press escape to continue", 30, "tm", 512, 470, BLACK, WHITE)
 
     # Display start screen (No ChatGPT used)
     def startscreen(self):
         self.screen.fill(GRAY)
-        self.draw_text(self.screen, "Made by Myles Zhang", 30, BLACK, "tm", 512, 700)
+        self.draw_text(self.screen, "Made by Myles Zhang", 30, "tm", 512, 700, BLACK, WHITE)
         title.draw(self.screen, 512, 70, 20)
         # Draw play button
         if startbtn.draw(self.screen, 512, 574, 5):
@@ -487,24 +491,24 @@ class Game:
         # Character selection display and descriptions
         if self.characternumber == 0:
             Tyler.draw(self.screen, 512, 200, 4)
-            self.draw_text(self.screen, "Tyler", 42, BLACK, "tm", 512, 130)
-            self.draw_text(self.screen, "Extra coins", 42, BLACK, "tm", 512, 360)
+            self.draw_text(self.screen, "Tyler", 42, "tm", 512, 130, BLACK, WHITE)
+            self.draw_text(self.screen, "Extra coins", 42, "tm", 512, 360, BLACK, WHITE)
         elif self.characternumber == 1:
             Adrian.draw(self.screen, 512, 200, 4)
-            self.draw_text(self.screen, "Adrian", 42, BLACK, "tm", 512, 130)
-            self.draw_text(self.screen, "Speed bonus", 42, BLACK, "tm", 512, 360)
+            self.draw_text(self.screen, "Adrian", 42, "tm", 512, 130, BLACK, WHITE)
+            self.draw_text(self.screen, "Speed bonus", 42, "tm", 512, 360, BLACK, WHITE)
         elif self.characternumber == 2:
             Rameil.draw(self.screen, 512, 200, 4)
-            self.draw_text(self.screen, "Rameil", 42, BLACK, "tm", 512, 130)
-            self.draw_text(self.screen, "Extra lives", 42, BLACK, "tm", 512, 360)
+            self.draw_text(self.screen, "Rameil", 42, "tm", 512, 130, BLACK, WHITE)
+            self.draw_text(self.screen, "Extra lives", 42, "tm", 512, 360, BLACK, WHITE)
         elif self.characternumber == 3:
             Robbie.draw(self.screen, 512, 200, 4)
-            self.draw_text(self.screen, "Robbie", 42, BLACK, "tm", 512, 130)
-            self.draw_text(self.screen, "Power scaling", 42, BLACK, "tm", 512, 360)
+            self.draw_text(self.screen, "Robbie", 42, "tm", 512, 130, BLACK, WHITE)
+            self.draw_text(self.screen, "Power scaling", 42, "tm", 512, 360, BLACK, WHITE)
         elif self.characternumber == 4:
             Myles.draw(self.screen, 512, 200, 4)
-            self.draw_text(self.screen, "Myles", 42, BLACK, "tm", 512, 130)
-            self.draw_text(self.screen, "Challenge character", 42, BLACK, "tm", 512, 360)
+            self.draw_text(self.screen, "Myles", 42, "tm", 512, 130, BLACK, WHITE)
+            self.draw_text(self.screen, "The challenge", 42, "tm", 512, 360, BLACK, WHITE)
         
         # Draw leaderbaord button
         if LBbutton.draw(self.screen, 512, 644, 1):
@@ -521,26 +525,26 @@ class Game:
         self.screen.fill(GRAY)
 
         # How to play
-        self.draw_text(self.screen, "How 2 play:", 50, BLACK, "tl", 170, 50)
-        self.draw_text(self.screen, "Collect yellow coins for score", 30, BLACK, "tl", 170, 100)
-        self.draw_text(self.screen, "Reach green door to move to next level", 30, BLACK, "tl", 170, 130)
-        self.draw_text(self.screen, "Hitting a red enemy damages you", 30, BLACK, "tl", 170, 160)
-        self.draw_text(self.screen, "Top 10 scores make it to the leaderboard", 30, BLACK, "tl", 170, 190)
-        self.draw_text(self.screen, "An enemy is added every round (or 5 levels)", 30, BLACK, "tl", 170, 220)
+        self.draw_text(self.screen, "How 2 play:", 50, "tl", 150, 50), BLACK, WHITE
+        self.draw_text(self.screen, "Collect yellow coins for score", 30, "tl", 150, 100, BLACK, WHITE)
+        self.draw_text(self.screen, "Reach green door to move to next level", 30, "tl", 150, 130, BLACK, WHITE)
+        self.draw_text(self.screen, "Hitting a red enemy damages you", 30, "tl", 150, 160, BLACK, WHITE)
+        self.draw_text(self.screen, "Top 10 scores make it to the leaderboard", 30, "tl", 150, 190, BLACK, WHITE)
+        self.draw_text(self.screen, "An enemy is added every round (or 5 levels)", 30, "tl", 150, 220, BLACK, WHITE)
 
         # Controls explanation
-        self.draw_text(self.screen, "Controls:", 50, BLACK, "tl", 170, 300)
-        self.draw_text(self.screen, "WASD or arrowkeys to move", 30, BLACK, "tl", 170, 350)
-        self.draw_text(self.screen, "r to restart", 30, BLACK, "tl", 170, 380)
+        self.draw_text(self.screen, "Controls:", 50, "tl", 150, 300, BLACK, WHITE)
+        self.draw_text(self.screen, "WASD or arrowkeys to move", 30, "tl", 150, 350, BLACK, WHITE)
+        self.draw_text(self.screen, "r to restart", 30, "tl", 150, 380, BLACK, WHITE)
 
         # Detailed character information
-        self.draw_text(self.screen, "Character information:", 50, BLACK, "tl", 170, 460)
-        self.draw_text(self.screen, "Tyler spawns one extra coin per level", 30, BLACK, "tl", 170, 510)
-        self.draw_text(self.screen, "Adrian is about 20% faster", 30, BLACK, "tl", 170, 540)
-        self.draw_text(self.screen, "Ramiel has 2 extra lives", 30, BLACK, "tl", 170, 570)
-        self.draw_text(self.screen, "Robbie gains 1% speed per level and an extra spawned coin per 10 levels", 30, BLACK, "tl", 170, 600)
-        self.draw_text(self.screen, "Note: Robbie's speed is capped at 20%", 30, BLACK, "tl", 170, 630)
-        self.draw_text(self.screen, "Myles has 1 less life and is 20% slower", 30, BLACK, "tl", 170, 660)
+        self.draw_text(self.screen, "Character information:", 50, "tl", 150, 460, BLACK, WHITE)
+        self.draw_text(self.screen, "Tyler spawns one extra coin per level", 30, "tl", 150, 510, BLACK, WHITE)
+        self.draw_text(self.screen, "Adrian is about 20% faster", 30, "tl", 150, 540, BLACK, WHITE)
+        self.draw_text(self.screen, "Ramiel has 2 extra lives", 30, "tl", 150, 570, BLACK, WHITE)
+        self.draw_text(self.screen, "Robbie gains 1% speed per level and an extra spawned coin per 10", 30, "tl", 150, 600, BLACK, WHITE)
+        self.draw_text(self.screen, "Note: Robbie's speed is capped at 20%", 30, "tl", 150, 630, BLACK, WHITE)
+        self.draw_text(self.screen, "Myles has 1 less life and is 20% slower", 30, "tl", 150, 660, BLACK, WHITE)
 
         # Draw exit button
         if leftbtn.draw(self.screen, 85, 50, 1):
@@ -588,8 +592,8 @@ class Game:
                 username = entry["username"]
 
             # Draw username and score information
-            self.draw_text(self.screen, username, 32, WHITE, "tl", x - 100, y + 10)
-            self.draw_text(self.screen, str(entry["score"]), 32, WHITE, "tl", x - 100, y + 52)
+            self.draw_text(self.screen, username, 32, "tl", x - 100, y + 10, BLACK, WHITE)
+            self.draw_text(self.screen, str(entry["score"]), 32, "tl", x - 100, y + 52, BLACK, WHITE)
 
             # Draw character used
             characternumber = entry["character"]
@@ -615,14 +619,14 @@ class Game:
         self.screen.fill(BLACK)
 
         # Draw text
-        self.draw_text(self.screen, "TOP 10 SCORE!", 150, WHITE, "tm", 512, 100)
-        self.draw_text(self.screen, "Enter name:", 90, WHITE, "tm", 512, 250)
+        self.draw_text(self.screen, "TOP 10 SCORE!", 150, "tm", 512, 100, WHITE, BLACK)
+        self.draw_text(self.screen, "Enter name:", 90, "tm", 512, 250, WHITE, BLACK)
        
         # Draw text box
         pg.draw.rect(self.screen, (255, 255, 255), (200, 350, 624, 100), 3)
 
         # Display typing
-        self.draw_text(self.screen, self.username, 90, WHITE, "tm", 512, 350)
+        self.draw_text(self.screen, self.username, 90, "tm", 512, 350, WHITE, BLACK)
         
         # Draw restart button
         if restartbtn.draw(self.screen, 512, 550, 1):
@@ -638,7 +642,7 @@ class Game:
         youlost.draw(self.screen, 512, 100, 8)
 
         # Display final score count
-        self.draw_text(self.screen, "Final coin count: " + str(self.coincount), 90, WHITE, "tm", 512, 420)
+        self.draw_text(self.screen, "Final coin count: " + str(self.coincount), 90, "tm", 512, 420, BLACK, WHITE)
 
         # Draw exit button
         if rightbtn.draw(self.screen, 512, 550, 1):
@@ -653,7 +657,7 @@ class Game:
         # Draw "life lost" screen
         lifelost.draw(self.screen, 512, 100, 8)
         
-        self.draw_text(self.screen, str(self.hp) + " REMChatGPTNING", 180, WHITE, "tm", 512, 350)
+        self.draw_text(self.screen, str(self.hp) + " REMAINING", 90, "tm", 512, 450, BLACK, WHITE)
 
         # Draw restart button
         if restartbtn.draw(self.screen, 512, 550, 1):
